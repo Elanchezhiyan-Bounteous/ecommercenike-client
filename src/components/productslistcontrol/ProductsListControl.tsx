@@ -12,6 +12,9 @@ import { useGetAllProducts } from "@/src/hooks/useProduct";
 import { ProductForApi } from "@/src/types/IconTypes";
 import FilterSectionSkeleton from "../skeletons/FilterSectionSkeleton";
 import ProductsListPageSkeleton from "../skeletons/ProductsListPageSkeleton";
+import { useAtom, useSetAtom } from "jotai";
+import { showFilterAtom } from "@/src/lib/filterAtoms";
+import { Menu } from "lucide-react";
 
 const ProductsListControl = () => {
   const router = useRouter();
@@ -26,6 +29,8 @@ const ProductsListControl = () => {
     isSuccess,
     isError,
   } = useGetAllProducts();
+
+  const [showFilter, setShowFilter] = useAtom(showFilterAtom);
 
   const [currentPage, setCurrentPage] = useState<number>(Number(page));
   const [productsPerPage, setProductsPerPage] = useState<number>(
@@ -45,9 +50,13 @@ const ProductsListControl = () => {
     }, 300);
   };
 
+  const handleFilter = () => {
+    setShowFilter(!showFilter);
+    console.log(showFilter);
+  };
+
   const [sortedProducts, setSortedProducts] = useState<ProductForApi[]>([]);
   const [sortOption, setSortOption] = useState<string | number>("Default");
-  const [filterVisible, setFilterVisible] = useState<boolean>(false);
   const [filterByName, setFilterByName] = useState<string>("");
   const options = [
     "Default",
@@ -133,34 +142,8 @@ const ProductsListControl = () => {
 
   return (
     <>
-      <div className="h-40 md:h-24  bg-[#F9F1E7] flex flex-col gap-8 justify-center px-6 md:flex-row md:justify-between md:px-6 lg:px-28 md:items-center">
+      <div className="h-40 md:h-24 flex flex-col gap-8 justify-center px-6 md:flex-row md:justify-between md:px-6 lg:px-28 md:items-center">
         <div className="flex flex-row gap-6 items-center">
-          <div className="flex flex-row justify-between gap-2 cursor-pointer">
-            <div
-              className="flex flex-row gap-2 items-center"
-              onClick={() => setFilterVisible(!filterVisible)}
-            >
-              <VectorIcon className="h-6 w-6 cursor-pointer" />
-              <Typography as="p" className="font-poppins text-xl font-[400]">
-                Filter
-              </Typography>
-            </div>
-
-            {filterVisible && (
-              <div className="absolute mt-12 bg-white border border-gray-300 rounded-md shadow-lg w-72 z-10">
-                <div className="px-4 py-2">
-                  <input
-                    type="text"
-                    value={filterByName}
-                    onChange={(e) => setFilterByName(e.target.value)}
-                    placeholder="Enter product name"
-                    className="p-2 border border-gray-300 rounded w-full"
-                  />
-                </div>
-              </div>
-            )}
-          </div>
-
           <div className="" onClick={() => toggleView("grid")}>
             <RoundGridIcon
               className={`h-7 w-7 object-contain ${
@@ -183,8 +166,25 @@ const ProductsListControl = () => {
         </div>
 
         <div className="flex flex-row gap-8 justify-center items-center">
+          <div className="flex flex-row items-center gap-2 cursor-pointer">
+            <Menu size={16} />
+            {showFilter ? (
+              <Typography as="p" className="text-base " onClick={handleFilter}>
+                {" "}
+                Hide Filter
+              </Typography>
+            ) : (
+              <Typography as="p" className="text-base" onClick={handleFilter}>
+                {" "}
+                Show Filter
+              </Typography>
+            )}
+          </div>
+
           <div className="flex flex-row gap-3 items-center">
-            <p className="text-xl md:ml-4">Show</p>
+            <Typography as="p" className="text-xl md:ml-4">
+              Show
+            </Typography>
             <Dropdown
               options={showAsOptions}
               selectedValue={productsPerPage}
@@ -192,7 +192,9 @@ const ProductsListControl = () => {
             />
           </div>
           <div className="flex flex-row gap-3 items-center">
-            <p className="text-xl">Sort</p>
+            <Typography as="p" className="text-xl">
+              Sort
+            </Typography>
             <Dropdown
               options={options}
               selectedValue={sortOption}

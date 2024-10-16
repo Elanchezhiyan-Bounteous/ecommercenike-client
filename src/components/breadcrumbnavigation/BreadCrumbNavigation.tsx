@@ -10,27 +10,8 @@ const BreadCrumbNavigation = ({
   isLoading,
 }: SingleProductComponentsProp) => {
   const router = useRouter();
-
-  if (isLoading || !productDetails) {
-    return (
-      <div className="px-8 bg-[#F9F1E7] flex flex-row h-24 justify-between md:px-28 items-center animate-pulse">
-        <div className="flex flex-row gap-6 items-center justify-between">
-          <div className="w-16 h-6 bg-gray-300 rounded"></div>
-
-          <div className="w-4 h-4 bg-gray-300 rounded"></div>
-
-          <div className="w-16 h-6 bg-gray-300 rounded"></div>
-
-          <div className="w-[2px] h-8 bg-gray-300"></div>
-
-          <div className="w-32 h-6 bg-gray-300 rounded"></div>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="px-8 bg-[#F9F1E7] flex flex-row h-24 justify-between  lg:px-36 items-center">
+    <div className="px-8  flex flex-row justify-between  lg:px-32 items-center">
       <div className="flex flex-row gap-3 md:gap-10 lg:gap-6 items-center justify-between">
         <Typography
           as="p"

@@ -1,233 +1,188 @@
-"use client";
-
-import React, { useState } from "react";
-import { SingleProductComponentsProp } from "@/src/types/IconTypes";
-import FacebookIcon from "@/public/assets/icons/FacebookIcon";
-import LinkedInIcon from "@/public/assets/icons/LinkedInIcon";
-import TwitterIcon from "@/public/assets/icons/TwitterIcon";
-import { useAppDispatch, useAppSelector } from "@/src/lib/hooks";
-import { addToCart, cartInfo, openCart } from "@/src/lib/features/cartSlice";
+import { useState } from "react";
+import { Typography } from "../common/Typography";
+import { useCart } from "@/src/hooks/useCart";
+import { cartItem, SingleProductComponentsProp } from "@/src/types/IconTypes";
+import { useAtom } from "jotai";
+import { cartAtom, isCartVisibleAtom } from "@/src/lib/cartAtoms";
 import CartSection from "../cartsection/cartSection";
 
-const ProductDetailSection = ({
-  productDetails,
-  isLoading,
-}: SingleProductComponentsProp) => {
-  const dispatch = useAppDispatch();
-  const cart = useAppSelector(cartInfo);
+const ProductCard = ({ productDetails }: SingleProductComponentsProp) => {
+  const [cartItems, setCartItems] = useAtom<cartItem[]>(cartAtom);
+  const [isCartVisible, setIsCartVisible] = useAtom<boolean>(isCartVisibleAtom);
 
+  const { addProductsToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
-  const [selectedColor, setSelectedColor] = useState<string | null>(null);
-  const [isCartVisible, setIsCartVisible] = useState(false);
 
-  const handleSizeClick = (size: string) => {
-    setSelectedSize(size);
+  const handleIncreaseQuantity = () => {
+    setQuantity(quantity + 1);
+    console.log(cartItems);
   };
 
-  const handleColorClick = (color: string) => {
-    setSelectedColor(color);
-  };
-
-  const handleQuantityChange = (type: string) => {
-    if (type === "increment") {
-      setQuantity(quantity + 1);
-    } else if (type === "decrement" && quantity > 1) {
+  const handleDecreaseQuantity = () => {
+    if (quantity > 1) {
       setQuantity(quantity - 1);
     }
   };
 
-  const handleAddToCart = () => {
-    if (productDetails) {
-      const cartItem = {
-        id: productDetails.id,
-        name: productDetails.name,
-        price: productDetails.price,
-        quantity,
-        size: selectedSize,
-        color: selectedColor,
-      };
-      dispatch(addToCart(cartItem));
-      dispatch(openCart());
-    }
-  };
-
-  
-
-  if (isLoading || !productDetails) {
-    return (
-      <div className="py-5 px-8 w-full md:w-1/2 animate-pulse">
-        <div className="mb-4">
-          <div className="h-10 bg-gray-300 rounded w-3/4 mb-2"></div>
-          <div className="h-6 bg-gray-300 rounded w-1/3"></div>
-        </div>
-
-        <div className="flex flex-col gap-6">
-          <div className="flex items-center gap-2 mb-4">
-            <div className="h-6 bg-gray-300 rounded w-16"></div>
-            <div className="h-6 bg-gray-300 rounded w-16"></div>
-            <div className="h-6 bg-gray-300 rounded w-16"></div>
-            <div className="h-6 bg-gray-300 rounded w-16"></div>
-            <div className="h-6 bg-gray-300 rounded w-16"></div>
-            <div className="w-[2px] h-8 bg-gray-300 mx-2"></div>
-            <div className="h-6 bg-gray-300 rounded w-24"></div>
-          </div>
-
-          <div className="space-y-2">
-            <div className="h-4 bg-gray-300 rounded w-full"></div>
-            <div className="h-4 bg-gray-300 rounded w-3/4"></div>
-            <div className="h-4 bg-gray-300 rounded w-2/3"></div>
-          </div>
-
-          <div className="flex flex-col gap-4">
-            <div>
-              <div className="h-6 bg-gray-300 rounded w-1/3 mb-2"></div>
-              <div className="flex gap-2">
-                <div className="h-10 w-10 bg-gray-300 rounded"></div>
-                <div className="h-10 w-10 bg-gray-300 rounded"></div>
-                <div className="h-10 w-10 bg-gray-300 rounded"></div>
-              </div>
-            </div>
-
-            <div>
-              <div className="h-6 bg-gray-300 rounded w-1/3 mb-2"></div>
-              <div className="flex gap-2">
-                <div className="h-10 w-10 bg-gray-300 rounded-full"></div>
-                <div className="h-10 w-10 bg-gray-300 rounded-full"></div>
-                <div className="h-10 w-10 bg-gray-300 rounded-full"></div>
-              </div>
-            </div>
-          </div>
-          <div className="flex flex-col gap-4 md:flex-row md:gap-4">
-            <div className="h-12 bg-gray-300 rounded w-24"></div>
-            <div className="h-12 bg-gray-300 rounded w-full"></div>
-            <div className="h-12 bg-gray-300 rounded w-full"></div>
-          </div>
-
-          <hr className="my-8" />
-          <div className="space-y-2">
-            <div className="h-4 bg-gray-300 rounded w-1/4"></div>
-            <div className="h-4 bg-gray-300 rounded w-1/2"></div>
-            <div className="h-4 bg-gray-300 rounded w-3/4"></div>
-          </div>
-
-          <div className="flex gap-3 mt-4">
-            <div className="h-6 w-6 bg-gray-300 rounded-full"></div>
-            <div className="h-6 w-6 bg-gray-300 rounded-full"></div>
-            <div className="h-6 w-6 bg-gray-300 rounded-full"></div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const sizeData = [
+    { size: "UK 6 (EU 40)", available: 5 },
+    { size: "UK 6.5", available: 2 },
+    { size: "UK 7", available: 0 },
+    { size: "UK 7.5", available: 10 },
+    { size: "UK 8", available: 1 },
+    { size: "UK 8.5", available: 0 },
+    { size: "UK 9", available: 3 },
+    { size: "UK 9.5", available: 0 },
+    { size: "UK 10", available: 4 },
+    { size: "UK 10.5", available: 0 },
+    { size: "UK 11", available: 6 },
+    { size: "UK 11.5", available: 1 },
+    { size: "UK 12", available: 0 },
+  ];
 
   return (
-    <div className="py-5 px-8 md:p-3 lg:py-5 lg:px-8 w-full lg:w-1/2">
-      <h1 className="text-4xl font-semibold mb-2">{productDetails?.name}</h1>
+    <div className="w-full px-6  lg:px-4 lg:w-1/2 ">
+      <Typography as="h1" className="text-2xl font-bold">
+        Air Force 1
+      </Typography>
+      <Typography as="p" className="text-gray-500">
+        Dominate the game and Just do it!
+      </Typography>
 
-      <div className="flex flex-col gap-6">
-        <p className="text-2xl text-gray-600 ">{productDetails?.price}</p>
-
-        <div className="flex flex-row gap-2 items-center ">
-          <span className="text-yellow-400 ">★</span>
-          <span className="text-yellow-400">★</span>
-          <span className="text-yellow-400">★</span>
-          <span className="text-yellow-400">★</span>
-          <span className="text-yellow-400">★</span>
-          <div className="w-[2px] h-8 bg-[#9F9F9F]/70 mx-2 "></div>
-
-          <span className="ml-2 text-gray-600">
-            {productDetails?.reviews?.length || 0} Customer Review
-          </span>
+      <div className="flex items-center my-2">
+        <div className="flex text-yellow-400 text-3xl ">
+          <Typography as="span">&#9733;</Typography>
+          <Typography as="span">&#9733;</Typography>
+          <Typography as="span">&#9733;</Typography>
+          <Typography as="span">&#9733;</Typography>
+          <Typography className="text-gray-300">&#9733;</Typography>
         </div>
+        <p className="text-sm text-gray-500 ml-2">(250 Ratings)</p>
+      </div>
 
-        <p className="text-gray-700 ">{productDetails?.desc}</p>
+      <div className="flex items-center my-2">
+        <Typography as="span" className="text-3xl font-bold text-black">
+          $54.69
+        </Typography>
+        <Typography as="span" className="text-gray-500 ml-4 line-through">
+          $78.66
+        </Typography>
+      </div>
 
-        <div className="flex flex-col gap-4">
-          <h4 className="font-semibold">Sizes</h4>
-          <div className="flex flex-row gap-2">
-            {productDetails?.sizes.map((size, index) => (
-              <button
-                key={index}
-                className={`px-4 py-2 border rounded-md hover:bg-gray-100 ${
-                  selectedSize === size ? "bg-gray-300" : ""
-                }`}
-                onClick={() => handleSizeClick(size)}
-              >
-                {size}
-              </button>
-            ))}
-          </div>
+      <div className="my-4 lg:w-full">
+        <div className="flex justify-between items-center mb-2">
+          <Typography as="span" className="font-bold">
+            Select Size
+          </Typography>
         </div>
-
-        <div className="flex flex-col gap-4">
-          <h4 className="font-semibold">Color</h4>
-          <div className="flex flex-row gap-2 items-center">
-            {productDetails?.colors.map((color, index) => (
-              <div
-                key={index}
-                className={`w-6 h-6 rounded-full cursor-pointer ${
-                  selectedColor === color.value ? "scale-125" : ""
-                }`}
-                style={{ backgroundColor: color.value }}
-                onClick={() => handleColorClick(color.value)}
-              ></div>
-            ))}
-          </div>
-        </div>
-
-        <div className="flex flex-row md:flex-col lg:flex-row gap-4 md:gap-4">
-          <div className="flex flex-row md:justify-between items-center border border-[#9F9F9F] rounded-lg ">
+        <div className="grid grid-cols-3 gap-2">
+          {sizeData.map((sizeObj, index) => (
             <button
-              onClick={() => handleQuantityChange("decrement")}
-              className="pl-2 py-1 md:pl-6 "
+              key={index}
+              onClick={() => setSelectedSize(sizeObj.size)}
+              className={`border py-2 text-center rounded-lg ${
+                selectedSize === sizeObj.size
+                  ? "border-black"
+                  : "border-gray-300 text-gray-500"
+              } ${
+                sizeObj.available === 0 ? "bg-gray-100 cursor-not-allowed" : ""
+              }`}
+              disabled={sizeObj.available === 0}
             >
-              -
+              {sizeObj.size}
+              <Typography as="p" className="block text-xs text-gray-400">
+                {sizeObj.available > 0
+                  ? `${sizeObj.available} available`
+                  : "Out of stock"}
+              </Typography>
             </button>
-            <input
-              type="text"
-              value={quantity}
-              readOnly
-              className="w-12 text-center"
-            />
-            <button
-              onClick={() => handleQuantityChange("increment")}
-              className="pr-2 py-1 md:pr-6"
-            >
-              +
-            </button>
-          </div>
+          ))}
+        </div>
+      </div>
 
+      <div className="my-4 flex items-center">
+        <Typography as="p" className="mr-4">
+          Quantity:
+        </Typography>
+        <div className="flex items-center border rounded">
           <button
-            onClick={handleAddToCart}
-            className="px-2 py-3 lg:px-6 lg:py-2 border rounded-lg border-black hover:bg-gray-100 "
+            className="px-2 py-1 border-r"
+            onClick={handleDecreaseQuantity}
           >
-            Add To Cart
+            -
           </button>
-          <button className="px-2 py-3 lg:px-6 lg:py-2 border rounded-lg border-black hover:bg-gray-100">
-            + Compare
+          <Typography as="p" className="px-4">
+            {quantity}
+          </Typography>
+          <button
+            className="px-2 py-1 border-l"
+            onClick={handleIncreaseQuantity}
+          >
+            +
           </button>
-        </div>
-        <hr className="my-8 flex " />
-      </div>
-
-      <div className="flex flex-col gap-3">
-        <p className="text-gray-600">SKU : {productDetails?.sku}</p>
-        <p className="text-gray-600">Category : {productDetails?.category}</p>
-        <p className="text-gray-600">
-          Tags : {productDetails?.tags.reduce((str, item) => str + " " + item)}
-        </p>
-        <div className="flex flex-row gap-3">
-          <p className="text-gray-600">Share : </p>
-          <FacebookIcon />
-          <LinkedInIcon />
-          <TwitterIcon />
         </div>
       </div>
 
-      {cart.isCartVisible && <CartSection />}
+      <div className="my-4 overflow-x-auto flex space-x-4 py-2 scrollbar-none ">
+        <div className=" flex flex-row items-center gap-4 border-2 border-black px-2 h-24 min-w-80 rounded-lg text-center">
+          <div className="flex flex-col gap-2">
+            <Typography as="p" className="text-sm text-left">
+              Get upto 30% Off on order value above $100
+            </Typography>
+            <button className="text-blue-500 text-sm text-left">
+              Terms & Conditions
+            </button>
+          </div>
+          <button className="block text-sm text-gray-700 border rounded-md p-2">
+            Use Code: ORDER100
+          </button>
+        </div>
+        <div className=" flex flex-row items-center gap-4 border-2 border-black px-2 h-24 min-w-80 rounded-lg text-center">
+          <div className="flex flex-col gap-2">
+            <p className="text-sm text-left">
+              Get upto 30% Off on order value above $100
+            </p>
+            <button className="text-blue-500 text-sm text-left">
+              Terms & Conditions
+            </button>
+          </div>
+          <button className="block text-sm text-gray-700 border rounded-md p-2">
+            Use Code: ORDER100
+          </button>
+        </div>
+        <div className=" flex flex-row items-center gap-4 border-2 border-black px-2 h-24 min-w-80 rounded-lg text-center">
+          <div className="flex flex-col gap-2">
+            <Typography as="p" className="text-sm text-left">
+              Get upto 30% Off on order value above $100
+            </Typography>
+            <button className="text-blue-500 text-sm text-left">
+              Terms & Conditions
+            </button>
+          </div>
+          <button className="block text-sm text-gray-700 border rounded-md p-2">
+            Use Code: ORDER100
+          </button>
+        </div>
+      </div>
+
+      <div className="flex gap-4">
+        <button
+          className="bg-black text-white  py-2 px-4 rounded-lg w-full"
+          onClick={() => {
+            setIsCartVisible(true);
+            addProductsToCart({ product: productDetails, quantity: quantity });
+          }}
+        >
+          Add to Bag
+        </button>
+        <button className="border py-2 px-4 rounded-lg w-full">
+          Add to Wishlist
+        </button>
+      </div>
+      {isCartVisible && <CartSection />}
     </div>
   );
 };
 
-export default ProductDetailSection;
+export default ProductCard;

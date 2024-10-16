@@ -19,9 +19,9 @@ const SingleProduct = () => {
   return (
     <>
       <BreadCrumbNavigation productDetails={product as ProductForApi} isLoading={isLoading} />
-      <div className="flex flex-col md:flex-row md:items-start md:px-4 md:py-4 lg:px-28 lg:py-10 md:gap-4 lg:gap-8">
+      <div className="flex flex-col py-4 lg:flex-row lg:items-start md:px-4 lg:px-28 lg:pb-10 md:gap-4">
         <ImageViewer productDetails={product as ProductForApi} isLoading={isLoading} isSuccess={isSuccess} />
-        <ProductDetailSection productDetails={product as ProductForApi} isLoading={isLoading} />
+        <ProductDetailSection productDetails={product as ProductForApi}  />
       </div>
       <hr />
       <ProductInformationSection productDetails={product as ProductForApi} isLoading={isLoading}  />

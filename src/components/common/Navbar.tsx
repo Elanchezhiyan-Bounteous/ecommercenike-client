@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import FurniroLogo from "../../../public/assets/icons/FurniroLogo";
 import CartIcon from "../../../public/assets/icons/CartIcon";
 import HeartIcon from "../../../public/assets/icons/HeartIcon";
 import ProfileAlertIcon from "../../../public/assets/icons/ProfileAlertIcon";
@@ -9,9 +8,12 @@ import Link from "next/link";
 import { TbMenuDeep } from "react-icons/tb";
 import { IoMdClose } from "react-icons/io";
 import { Typography } from "./Typography";
+import { useAtom } from "jotai";
+import { showFilterAtom } from "@/src/lib/filterAtoms";
 
 const Navbar = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [showFilter] = useAtom(showFilterAtom)
 
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
@@ -20,9 +22,26 @@ const Navbar = () => {
   return (
     <header className="w-full bg-white text-black justify-between font-montserrat items-center flex flex-row px-4 md:px-14 py-6">
       <div className="flex flex-row items-center gap-1">
-        <FurniroLogo />
+        <svg
+          aria-hidden="true"
+          className="w-8 h-8"
+          focusable="false"
+          viewBox="0 0 24 24"
+          role="img"
+          width="24px"
+          height="24px"
+          fill="none"
+          
+        >
+          <path
+            fill="currentColor"
+            fillRule="evenodd"
+            d="M21 8.719L7.836 14.303C6.74 14.768 5.818 15 5.075 15c-.836 0-1.445-.295-1.819-.884-.485-.76-.273-1.982.559-3.272.494-.754 1.122-1.446 1.734-2.108-.144.234-1.415 2.349-.025 3.345.275.2.666.298 1.147.298.386 0 .829-.063 1.316-.19L21 8.719z"
+            clipRule="evenodd"
+          ></path>
+        </svg>
         <Typography as="h1" className="text-3xl font-bold">
-          Furniro
+          Nike
         </Typography>
       </div>
 

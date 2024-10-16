@@ -1,8 +1,8 @@
 "use client";
 
 import { SingleProductComponentsProp } from "@/src/types/IconTypes";
-import Image from "next/image";
 import React, { useState } from "react";
+import { Typography } from "../common/Typography";
 
 const ProductInformationSection = ({
   productDetails,
@@ -30,19 +30,19 @@ const ProductInformationSection = ({
       );
     } else if (activeTab === "additional") {
       return (
-        <p className="text-gray-600 text-lg">
+        <Typography as="p" className="text-gray-600 text-lg">
           Here you would provide additional information about the product, like
           specifications, materials, or any other technical details that the
           user might want to know before making a purchase decision.
-        </p>
+        </Typography>
       );
     } else if (activeTab === "reviews") {
       return (
         <div className="space-y-4">
           {productDetails.reviews.map((review, index) => (
             <div key={index} className="bg-gray-100 p-4 rounded-lg shadow-sm">
-              <h4 className="font-semibold text-primary">{review.name}</h4>
-              <p className="text-gray-600">{review.feedback}</p>
+              <Typography as="h4" className="font-semibold text-primary">{review.name}</Typography>
+              <Typography as="p" className="text-gray-600">{review.feedback}</Typography>
             </div>
           ))}
         </div>
@@ -87,25 +87,7 @@ const ProductInformationSection = ({
 
         <div className="py-6 md:py-5 lg:pt-10 lg:pb-8">{renderContent()}</div>
       </div>
-      <div className="px-4 md:px-16 md:pt-2 lg:pt-5 lg:pb-16 lg:px-32 flex flex-col md:flex-row gap-4 md:gap-8 lg:gap-16 md:justify-evenly">
-        <div className=" md:w-1/2 sm:w-full ">
-          <img
-            
-            src={productDetails?.descriptionImages[0].imageUrl}
-            alt="Product Image 1"
-            className="w-full rounded-lg shadow-lg  bg-[#F9F1E7]"
-          />
-        </div>
-        <div className="md:w-1/2 sm:w-full ">
-          <img
-            height={10}
-            width={10}
-            src={productDetails?.descriptionImages[1].imageUrl}
-            alt="Product Image 2"
-            className="w-full rounded-lg shadow-lg bg-[#F9F1E7]"
-          />
-        </div>
-      </div>
+
       <hr className="mt-6" />
     </>
   );

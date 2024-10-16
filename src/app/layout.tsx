@@ -5,7 +5,7 @@ import Navbar from "../components/common/Navbar";
 import Footer from "../components/common/Footer";
 import React, { Suspense } from "react";
 import ReactQueryProvider from "../components/reactqueryprovider/ReactQueryProvider";
-import StoreProvider from "./StoreProvider";
+import { Provider as JotaiProvider } from "jotai";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -35,11 +35,11 @@ export default function RootLayout({
       >
         <Suspense fallback={<div>Loading please wait</div>}>
           <ReactQueryProvider>
-            <StoreProvider>
+            <JotaiProvider>
               <Navbar />
               {children}
               <Footer />
-            </StoreProvider>
+            </JotaiProvider>
           </ReactQueryProvider>
         </Suspense>
       </body>

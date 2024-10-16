@@ -1,15 +1,15 @@
 "use client";
 import React, { useState } from "react";
 import { useLogin } from "../../hooks/useAuth";
-import { useSelector } from "react-redux";
-import { SelectAuth } from "../../lib/features/authSlice";
-import { RootState } from "@/src/lib/store";
+import { Typography } from "@/src/components/common/Typography";
+import { useAtom } from "jotai";
+import { userAtom } from "@/src/lib/authAtoms";
 
 const LoginComponent = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const mutation = useLogin();
-  const { token, name } = useSelector(SelectAuth); 
+  const [userSession] = useAtom(userAtom);
 
   const handleSubmit = () => {
     mutation.mutate({ email, password });
@@ -36,10 +36,10 @@ const LoginComponent = () => {
       {mutation.isError && (
         <p style={{ color: "red" }}>{mutation.error?.message}</p>
       )}
-      {token && name && (
-        <p>
-          Login successful! User: {name}, Token: {token}
-        </p>
+      {userSession && (
+        <Typography>
+          Login successful! User: {userSession.name}, Token: {userSession.token}
+        </Typography>
       )}
     </div>
   );

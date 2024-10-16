@@ -3,7 +3,7 @@ import React from 'react'
 
 const FilterSectionSkeleton = () => {
   return (
-    <div className="h-40 md:h-24 bg-[#F9F1E7] flex flex-col gap-8 justify-center px-6 md:flex-row md:justify-between md:px-6 lg:px-28 md:items-center animate-pulse">
+    <div className="h-40 md:h-24  flex flex-col gap-8 justify-center px-6 md:flex-row md:justify-between md:px-6 lg:px-28 md:items-center animate-pulse">
       <div className="flex flex-row gap-6 items-center">
         <div className="flex flex-row justify-between gap-2">
           <div className="h-6 w-6 bg-gray-300 rounded-full"></div>

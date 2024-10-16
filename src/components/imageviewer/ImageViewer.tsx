@@ -17,13 +17,13 @@ const ImageViewer = ({
     }
   }, [productDetails]);
 
-  const [selectedIndex, setSelectedIndex] = useState(0); // Track current image index
+  const [selectedIndex, setSelectedIndex] = useState(0); 
 
   const handleNextImage = () => {
     if (selectedIndex < productDetails.productGallery.length - 1) {
       setSelectedIndex(selectedIndex + 1);
     } else {
-      setSelectedIndex(0); // Loop back to the first image
+      setSelectedIndex(0);
     }
     setSelectedImage(productDetails.productGallery[selectedIndex].imageUrl);
   };
@@ -32,7 +32,7 @@ const ImageViewer = ({
     if (selectedIndex > 0) {
       setSelectedIndex(selectedIndex - 1);
     } else {
-      setSelectedIndex(productDetails.productGallery.length - 1); // Loop back to the last image
+      setSelectedIndex(productDetails.productGallery.length - 1); 
     }
     setSelectedImage(productDetails.productGallery[selectedIndex].imageUrl);
   };
@@ -51,51 +51,49 @@ const ImageViewer = ({
   }
 
   return (
-    <div className="flex flex-col-reverse lg:flex-row py-5 px-8 md:p-3 lg:py-5 lg:px-4 gap-2 justify-around w-full lg:w-1/2">
-      <div className="flex flex-row lg:flex-col gap-2 justify-between items-start">
+    <div className="flex flex-col-reverse gap-6 w-full  lg:flex-row py-5 px-4 md:p-3 lg:py-0 lg:px-4 lg:w-1/2">
+      <div className="flex flex-row gap-6 lg:flex-col lg:gap-2 items-center">
         {productDetails?.productGallery.map((image, index) => (
           <div
             key={index}
-            className="cursor-pointer w-full"
+            className="h-[60px] w-[60px] cursor-pointer"
             onMouseEnter={() => setSelectedImage(image.imageUrl)}
           >
-            <div className="h-[60px] w-[60px]">
-              <Image
-                height={60}
-                width={60}
-                src={image.imageUrl}
-                alt={`Thumbnail ${index}`}
-                className=" w-full h-full object-cover rounded-md"
-              />
-            </div>
+            <Image
+              height={60}
+              width={60}
+              priority={true}
+              src={image.imageUrl}
+              alt={`Thumbnail ${index}`}
+              className=" w-full h-full object-cover rounded-md"
+            />
           </div>
         ))}
       </div>
 
-      {/* Main image section */}
-      <div className="relative w-full max-w-lg h-auto">
-        <Image
-          height={480} // Increase the size of the main image
-          width={480}
-          src={selectedImage}
-          alt="Selected"
-          className="w-full h-full object-contain"
-        />
+      <div className="relative w-full h-auto">
+        <div className="w-full h-[517px]">
+          <Image
+            priority={true}
+            height={517}
+            width={517}
+            src={selectedImage}
+            alt="alt"
+            className="w-full h-full object-cover"
+          />
+        </div>
 
-        {/* Navigation buttons at the right corner */}
         <div className="absolute bottom-4 right-4 flex gap-2">
           <button
             className="bg-white p-2 rounded-full shadow hover:bg-gray-100 transition"
             onClick={handlePrevImage}
           >
-            {/* Previous Button Icon */}
             &lt;
           </button>
           <button
             className="bg-white p-2 rounded-full shadow hover:bg-gray-100 transition"
             onClick={handleNextImage}
           >
-            {/* Next Button Icon */}
             &gt;
           </button>
         </div>

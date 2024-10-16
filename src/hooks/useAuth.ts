@@ -1,7 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { setUser } from "../lib/features/authSlice";
-import { useAppDispatch } from "../lib/hooks";
-import { useRouter } from "next/navigation";
+import { useSetAtom } from "jotai";
+import { userAtom } from "../lib/authAtoms";
 
 const login = async (
   email: string,
@@ -25,8 +24,7 @@ const login = async (
 };
 
 const useLogin = () => {
-  const dispatch = useAppDispatch();
-  const router = useRouter()
+  const setUserSession = useSetAtom(userAtom);
   return useMutation({
     mutationFn: async (credentials: { email: string; password: string }) => {
       const response = login(credentials.email, credentials.password);
@@ -34,7 +32,7 @@ const useLogin = () => {
     },
     onSuccess: (response) => {
       if (response.token && response.username) {
-        dispatch(setUser({token:response.token, name:response.username})); 
+       setUserSession({token:response.token, name:response.username})
       }
     //  router.push("/shop");
     },

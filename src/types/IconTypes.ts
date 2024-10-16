@@ -53,7 +53,7 @@ export interface Product {
 }
 
 export interface ProductForApi {
-  id?: string;
+  id: string;
   name: string;
   desc: string;
   price: number;
@@ -73,6 +73,17 @@ export interface ProductForApi {
 
 export interface SingleProductComponentsProp {
   productDetails: ProductForApi;
+  category?: string;
   isLoading?: boolean;
   isSuccess?: boolean;
+}
+
+export interface cartItem {
+  product: ProductForApi;
+  quantity: number;
+}
+
+export interface userSessionProp {
+  name: string;
+  token: string;
 }

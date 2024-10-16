@@ -1,5 +1,6 @@
 import React from "react";
 import Button from "./Button";
+import { Typography } from "./Typography";
 
 const Footer = () => {
   return (
@@ -51,7 +52,7 @@ const Footer = () => {
       </div>
 
       <div className="container mx-auto mt-10 text-center border-t border-gray-200 pt-4 text-sm font-medium flex justify-start">
-        <p>2023 Funiro. All rights reserved</p>
+        <Typography>2023 Funiro. All rights reserved</Typography>
       </div>
     </footer>
   );
