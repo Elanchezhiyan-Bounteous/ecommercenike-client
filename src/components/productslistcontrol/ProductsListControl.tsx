@@ -145,8 +145,8 @@ const ProductsListControl = () => {
 
   return (
     <>
-      <div className="flex flex-col gap-8 justify-center px-6 md:flex-row md:justify-between md:px-6 lg:pt-16 md:items-center transition-all duration-300 ease-in-out">
-        <div className="flex flex-row gap-3 items-center">
+      <div className="flex flex-col gap-8 justify-center px-6 md:flex-row md:justify-between md:px-8 lg:pt-16 md:items-center transition-all duration-300 ease-in-out">
+        <div className="hidden lg:flex lg:flex-row gap-6 items-center">
           <div onClick={() => toggleView("grid")}>
             <RoundGridIcon
               className={`h-7 w-7 object-contain ${
@@ -162,89 +162,98 @@ const ProductsListControl = () => {
             />
           </div>
           <div className="w-[2px] h-8 bg-[#9F9F9F]/70 mx-2 "></div>
-          <Typography as="p" className="text-base font-poppins">
-            Showing {start + 1}–{Math.min(end, sortedProducts.length)} of{" "}
-            {sortedProducts.length} results
-          </Typography>
+          <div className="w-32">
+            <Typography as="p" className="text-base font-poppins ">
+              {start + 1}–{Math.min(end, sortedProducts.length)} of{" "}
+              {sortedProducts.length} results
+            </Typography>
+          </div>
         </div>
 
-        <div className="flex flex-row gap-6 justify-center items-center">
-          <div>
-            {isLargeScreen ? (
-              <Sheet open={open} onOpenChange={setOpen}>
-                <SheetTrigger asChild>
-                  <Button onClick={handleFilter} variant='outline'>
-                    <p className="text-xl">
-                      Show Filters
-                    </p>
-                  </Button>
-                </SheetTrigger>
+        <div className="flex flex-col gap-5 md:gap-16 md:flex-row w-full">
+          <div className="flex md:flex-row justify-between items-center w-full">
+            <div>
+              {isLargeScreen ? (
+                <Sheet open={open} onOpenChange={setOpen}>
+                  <SheetTrigger asChild>
+                    <Button onClick={handleFilter} variant="outline">
+                      <p className="text-xl">Filters</p>
+                    </Button>
+                  </SheetTrigger>
 
-                <SheetContent side="left" className="w-[300px] sm:w-[400px]">
-                  <div className="h-full overflow-y-auto">
-                    <SheetHeader className="text-left">
-                      <SheetTitle>Filters</SheetTitle>
+                  <SheetContent side="left" className="w-[300px] sm:w-[400px]">
+                    <div className="h-full overflow-y-auto">
+                      <SheetHeader className="text-left">
+                        <SheetTitle>Filters</SheetTitle>
+                        <ProductFilters />
+                      </SheetHeader>
+                    </div>
+                    <SheetFooter>
+                      <SheetClose asChild>
+                        <Button variant="outline" onClick={handleFilter}>
+                          Close
+                        </Button>
+                      </SheetClose>
+                    </SheetFooter>
+                  </SheetContent>
+                </Sheet>
+              ) : (
+                <Drawer open={open} onOpenChange={setOpen}>
+                  <DrawerTrigger asChild>
+                    <Button variant="outline" onClick={handleFilter}>
+                      <p className="text-xl">Filters</p>
+                    </Button>
+                  </DrawerTrigger>
+
+                  <DrawerContent>
+                    <div className="h-full overflow-y-auto">
+                      <DrawerHeader className="text-left">
+                        <DrawerTitle>Filters</DrawerTitle>
+                      </DrawerHeader>
                       <ProductFilters />
-                    </SheetHeader>
-                  </div>
-                  <SheetFooter>
-                    <SheetClose asChild>
-                      <Button variant="outline" onClick={handleFilter}>
-                        Close
-                      </Button>
-                    </SheetClose>
-                  </SheetFooter>
-                </SheetContent>
-              </Sheet>
-            ) : (
-              <Drawer open={open} onOpenChange={setOpen}>
-                <DrawerTrigger asChild>
-                  <Button variant="outline" onClick={handleFilter}>
-                    <p className="text-xl">
-                     Show Filters
-                    </p>
-                  </Button>
-                </DrawerTrigger>
-
-                <DrawerContent>
-                  <div className="h-full overflow-y-auto">
-                    <DrawerHeader className="text-left">
-                      <DrawerTitle>Filters</DrawerTitle>
-                    </DrawerHeader>
-                    <ProductFilters />
-                  </div>
-                  <DrawerFooter>
-                    <DrawerClose asChild>
-                      <Button variant="outline" onClick={handleFilter}>
-                        Close
-                      </Button>
-                    </DrawerClose>
-                  </DrawerFooter>
-                </DrawerContent>
-              </Drawer>
-            )}
-          </div>
-
-          <div className="flex flex-row items-center gap-3">
-            <Typography as="p" className="text-xl">
-              Show
+                    </div>
+                    <DrawerFooter>
+                      <DrawerClose asChild>
+                        <Button variant="outline" onClick={handleFilter}>
+                          Close
+                        </Button>
+                      </DrawerClose>
+                    </DrawerFooter>
+                  </DrawerContent>
+                </Drawer>
+              )}
+            </div>
+            <Typography as="p" className="lg:hidden text-base font-poppins">
+              {start + 1}–{Math.min(end, sortedProducts.length)} of{" "}
+              {sortedProducts.length} results
             </Typography>
-            <Dropdown
-              options={showAsOptions}
-              selectedValue={productsPerPage}
-              onChange={handleShowAsChange}
-            />
           </div>
+          <hr className="md:hidden" />
 
-          <div className="flex flex-row gap-3 items-center">
-            <Typography as="p" className="text-xl">
-              Sort
-            </Typography>
-            <Dropdown
-              options={options}
-              selectedValue={sortOption}
-              onChange={handleSortChange}
-            />
+          <div className="flex md:flex-row gap-16 md:gap-6 ">
+            <div className="flex flex-row items-center gap-3">
+              <Typography as="p" className="text-xl">
+                Show
+              </Typography>
+              <Dropdown
+                className="w-16 p-3"
+                options={showAsOptions}
+                selectedValue={productsPerPage}
+                onChange={handleShowAsChange}
+              />
+            </div>
+
+            <div className="flex flex-row gap-3 items-center">
+              <Typography as="p" className="text-xl">
+                Sort
+              </Typography>
+              <Dropdown
+                className="w-32 p-3"
+                options={options}
+                selectedValue={sortOption}
+                onChange={handleSortChange}
+              />
+            </div>
           </div>
         </div>
       </div>

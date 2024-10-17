@@ -1,29 +1,37 @@
 import React from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 interface DropdownProps {
   options: (string | number)[];
   selectedValue: string | number;
-  onChange: (value: number | string) => void;
+  onChange: (value: string) => void;
+  className?: string
 }
 
-const Dropdown: React.FC<DropdownProps> = ({
+export default function Dropdown({
   options,
   selectedValue,
   onChange,
-}) => {
+  className
+}: DropdownProps) {
   return (
-    <select
-      value={selectedValue}
-      onChange={(e) => onChange(e.target.value)}
-      className="border rounded-md p-2 bg-gray-200"
-    >
-      {options.map((option) => (
-        <option key={option} value={option}>
-          {option}
-        </option>
-      ))}
-    </select>
+    <Select value={selectedValue.toString()} onValueChange={onChange} >
+      <SelectTrigger className={className}>
+        <SelectValue placeholder="Select an option" />
+      </SelectTrigger>
+      <SelectContent>
+        {options.map((option) => (
+          <SelectItem key={option} value={option.toString()}>
+            {option}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   );
-};
-
-export default Dropdown;
+}
