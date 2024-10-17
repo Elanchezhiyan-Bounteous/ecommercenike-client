@@ -38,7 +38,7 @@ const LoginComponent = () => {
       )}
       {userSession && (
         <Typography>
-          Login successful! User: {userSession.name}, Token: {userSession.token}
+          Login successful! User: {userSession.name}, Token: {userSession.token} Id: {userSession.id}
         </Typography>
       )}
     </div>

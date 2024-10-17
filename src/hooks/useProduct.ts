@@ -3,10 +3,9 @@ import { ProductForApi, userSessionProp } from "../types/IconTypes";
 import { useAtom } from "jotai";
 import { userAtom } from "../lib/authAtoms";
 
-const getAllProducts = async (userSession: userSessionProp): Promise<ProductForApi[]> => {
+const getAllProducts = async (): Promise<ProductForApi[]> => {
   const response = await fetch("http://localhost:5266/api/product");
   const productsData = response.json();
-  console.log("token", userSession.token)
   return productsData;
 };
 
@@ -27,10 +26,9 @@ const getProductByCategory = async (
 };
 
 const useGetAllProducts = () => {
-  const [userSession, setUserSession] = useAtom(userAtom);
   return useQuery({
     queryKey: ["product"],
-    queryFn: () => getAllProducts(userSession),
+    queryFn: () => getAllProducts(),
     staleTime: 0,
   });
 };

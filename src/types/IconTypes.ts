@@ -1,3 +1,5 @@
+import { Cart } from "../hooks/useCartApi";
+
 export interface IconProps {
   className?: string;
 }
@@ -32,7 +34,7 @@ export interface ShareLinks {
   twitter: string;
 }
 
-export interface Product {
+export interface ProductHel {
   id?: string;
   name: string;
   description: string;
@@ -79,6 +81,7 @@ export interface cartItem {
   product: ProductForApi;
   quantity: number;
   productId: string;
+  productsOfCart?: Cart;
 }
 
 export interface userSessionProp {
