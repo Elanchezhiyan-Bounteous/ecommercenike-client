@@ -7,7 +7,7 @@ const Footer = () => {
     <footer className="bg-white border-t border-gray-200 py-10 px-8 font-Poppins">
       <div className="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
         <div className="flex flex-col gap-10">
-          <h2 className="text-2xl font-semibold">Funiro.</h2>
+          <h2 className="text-2xl font-semibold">Nike.</h2>
           <address className="not-italic text-gray-500 text-sm">
             400 University Drive Suite 200 Coral Gables, <br />
             FL 33134 USA

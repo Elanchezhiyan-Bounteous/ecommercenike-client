@@ -3,33 +3,54 @@ import React, { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Typography } from "../common/Typography";
 import Dropdown from "../common/Dropdown";
+import { useMediaQuery } from "react-responsive";
 import ProductsListSection from "../productslistsection/ProductsListSection";
-import VectorIcon from "@/public/assets/icons/VectorIcon";
 import RoundGridIcon from "@/public/assets/icons/RoundGridIcon";
 import ViewListIcon from "@/public/assets/icons/ViewListIcon";
 import PaginationControls from "../paginationcontrolsection/PaginationControls";
 import { useGetAllProducts } from "@/src/hooks/useProduct";
 import { ProductForApi } from "@/src/types/IconTypes";
-import FilterSectionSkeleton from "../skeletons/FilterSectionSkeleton";
-import ProductsListPageSkeleton from "../skeletons/ProductsListPageSkeleton";
-import { useAtom, useSetAtom } from "jotai";
+import { useAtom } from "jotai";
 import { showFilterAtom } from "@/src/lib/filterAtoms";
-import { Menu } from "lucide-react";
+
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "../ui/drawer";
+import { Button } from "../ui/button";
+import ProductFilters from "../productfiltersection/ProductFilterSection";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "../ui/sheet";
 
 const ProductsListControl = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [open, setOpen] = useState(false);
 
   const page = searchParams.get("page") ?? "1";
   const per_page = searchParams.get("per_page") ?? "16";
 
+  const isLargeScreen = useMediaQuery({ minWidth: 1024 });
   const {
     data: productsofapi,
     isLoading,
     isSuccess,
     isError,
   } = useGetAllProducts();
-
   const [showFilter, setShowFilter] = useAtom(showFilterAtom);
 
   const [currentPage, setCurrentPage] = useState<number>(Number(page));
@@ -44,20 +65,16 @@ const ProductsListControl = () => {
     setCurrentPage(newPage);
     setTimeout(() => {
       window.scrollTo({
-        top: 400,
+        top: 100,
         behavior: "smooth",
       });
     }, 300);
   };
 
-  const handleFilter = () => {
-    setShowFilter(!showFilter);
-    console.log(showFilter);
-  };
-
   const [sortedProducts, setSortedProducts] = useState<ProductForApi[]>([]);
   const [sortOption, setSortOption] = useState<string | number>("Default");
   const [filterByName, setFilterByName] = useState<string>("");
+
   const options = [
     "Default",
     "A to Z",
@@ -67,13 +84,9 @@ const ProductsListControl = () => {
   ];
   const showAsOptions = [8, 16, 24, 32];
 
-  const handleSortChange = (value: string | number) => {
-    setSortOption(value);
-  };
-
-  const handleShowAsChange = (value: number | string) => {
+  const handleSortChange = (value: string | number) => setSortOption(value);
+  const handleShowAsChange = (value: number | string) =>
     setProductsPerPage(Number(value));
-  };
 
   const applySorting = (products: ProductForApi[], sortBy: string | number) => {
     let sortedArray = [...products];
@@ -103,6 +116,10 @@ const ProductsListControl = () => {
     );
   };
 
+  const handleFilter = () => {
+    setShowFilter(!showFilter);
+  };
+
   useEffect(() => {
     if (isSuccess && productsofapi) {
       const updatedProducts = applySorting(
@@ -122,36 +139,22 @@ const ProductsListControl = () => {
   }, [productsPerPage, currentPage]);
 
   const [isGridView, setIsGridView] = useState(true);
+  const toggleView = (viewType: string) => setIsGridView(viewType === "grid");
 
-  const toggleView = (viewType: string) => {
-    setIsGridView(viewType === "grid");
-  };
-
-  if (isError) {
-    return <div>Something went wrong</div>;
-  }
-
-  if (isLoading) {
-    return (
-      <>
-        <FilterSectionSkeleton />
-        <ProductsListPageSkeleton isGridView={isGridView} />
-      </>
-    );
-  }
+  if (isError) return <div>Something went wrong</div>;
 
   return (
     <>
-      <div className="h-40 md:h-24 flex flex-col gap-8 justify-center px-6 md:flex-row md:justify-between md:px-6 lg:px-28 md:items-center">
-        <div className="flex flex-row gap-6 items-center">
-          <div className="" onClick={() => toggleView("grid")}>
+      <div className="flex flex-col gap-8 justify-center px-6 md:flex-row md:justify-between md:px-6 lg:pt-16 md:items-center transition-all duration-300 ease-in-out">
+        <div className="flex flex-row gap-3 items-center">
+          <div onClick={() => toggleView("grid")}>
             <RoundGridIcon
               className={`h-7 w-7 object-contain ${
                 isGridView ? "bg-[#B88E2F]  rounded-lg p-1 h-8 w-8" : ""
               }`}
             />
           </div>
-          <div className="" onClick={() => toggleView("list")}>
+          <div onClick={() => toggleView("list")}>
             <ViewListIcon
               className={`h-7 w-7 ${
                 !isGridView ? "bg-[#B88E2F] rounded-lg p-1 h-8 w-8" : ""
@@ -165,24 +168,65 @@ const ProductsListControl = () => {
           </Typography>
         </div>
 
-        <div className="flex flex-row gap-8 justify-center items-center">
-          <div className="flex flex-row items-center gap-2 cursor-pointer">
-            <Menu size={16} />
-            {showFilter ? (
-              <Typography as="p" className="text-base " onClick={handleFilter}>
-                {" "}
-                Hide Filter
-              </Typography>
+        <div className="flex flex-row gap-6 justify-center items-center">
+          <div>
+            {isLargeScreen ? (
+              <Sheet open={open} onOpenChange={setOpen}>
+                <SheetTrigger asChild>
+                  <Button onClick={handleFilter} variant='outline'>
+                    <p className="text-xl">
+                      Show Filters
+                    </p>
+                  </Button>
+                </SheetTrigger>
+
+                <SheetContent side="left" className="w-[300px] sm:w-[400px]">
+                  <div className="h-full overflow-y-auto">
+                    <SheetHeader className="text-left">
+                      <SheetTitle>Filters</SheetTitle>
+                      <ProductFilters />
+                    </SheetHeader>
+                  </div>
+                  <SheetFooter>
+                    <SheetClose asChild>
+                      <Button variant="outline" onClick={handleFilter}>
+                        Close
+                      </Button>
+                    </SheetClose>
+                  </SheetFooter>
+                </SheetContent>
+              </Sheet>
             ) : (
-              <Typography as="p" className="text-base" onClick={handleFilter}>
-                {" "}
-                Show Filter
-              </Typography>
+              <Drawer open={open} onOpenChange={setOpen}>
+                <DrawerTrigger asChild>
+                  <Button variant="outline" onClick={handleFilter}>
+                    <p className="text-xl">
+                     Show Filters
+                    </p>
+                  </Button>
+                </DrawerTrigger>
+
+                <DrawerContent>
+                  <div className="h-full overflow-y-auto">
+                    <DrawerHeader className="text-left">
+                      <DrawerTitle>Filters</DrawerTitle>
+                    </DrawerHeader>
+                    <ProductFilters />
+                  </div>
+                  <DrawerFooter>
+                    <DrawerClose asChild>
+                      <Button variant="outline" onClick={handleFilter}>
+                        Close
+                      </Button>
+                    </DrawerClose>
+                  </DrawerFooter>
+                </DrawerContent>
+              </Drawer>
             )}
           </div>
 
-          <div className="flex flex-row gap-3 items-center">
-            <Typography as="p" className="text-xl md:ml-4">
+          <div className="flex flex-row items-center gap-3">
+            <Typography as="p" className="text-xl">
               Show
             </Typography>
             <Dropdown
@@ -191,6 +235,7 @@ const ProductsListControl = () => {
               onChange={handleShowAsChange}
             />
           </div>
+
           <div className="flex flex-row gap-3 items-center">
             <Typography as="p" className="text-xl">
               Sort
