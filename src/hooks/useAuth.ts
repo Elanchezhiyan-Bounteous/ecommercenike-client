@@ -5,8 +5,8 @@ import { userAtom } from "../lib/authAtoms";
 const login = async (
   email: string,
   password: string
-): Promise<{ token: string; username: string }> => {
-  const response = await fetch("http://localhost:5113/api/auth/login", {
+): Promise<{ token: string; username: string; id:string}> => {
+  const response = await fetch("http://localhost:5226/api/auth/login", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -23,6 +23,7 @@ const login = async (
   return data;
 };
 
+
 const useLogin = () => {
   const setUserSession = useSetAtom(userAtom);
   return useMutation({
@@ -32,7 +33,7 @@ const useLogin = () => {
     },
     onSuccess: (response) => {
       if (response.token && response.username) {
-       setUserSession({token:response.token, name:response.username})
+       setUserSession({token:response.token, name:response.username, id: response.id})
       }
     //  router.push("/shop");
     },

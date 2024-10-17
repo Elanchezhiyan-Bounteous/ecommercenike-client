@@ -6,8 +6,8 @@ import { useEffect, useState } from "react";
 
 const ImageViewer = ({
   productDetails,
-  isLoading,
   isSuccess,
+  isLoading
 }: SingleProductComponentsProp) => {
   const [selectedImage, setSelectedImage] = useState<string>();
 

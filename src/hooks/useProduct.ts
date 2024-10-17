@@ -4,14 +4,14 @@ import { useAtom } from "jotai";
 import { userAtom } from "../lib/authAtoms";
 
 const getAllProducts = async (userSession: userSessionProp): Promise<ProductForApi[]> => {
-  const response = await fetch("http://localhost:5113/api/product/");
+  const response = await fetch("http://localhost:5266/api/product");
   const productsData = response.json();
   console.log("token", userSession.token)
   return productsData;
 };
 
 const getProductById = async (id: string): Promise<ProductForApi> => {
-  const response = await fetch(`http://localhost:5113/api/product/${id}`);
+  const response = await fetch(`http://localhost:5266/api/product/${id}`);
   const productsData = response.json();
   console.log("data by id", productsData);
   return productsData;
@@ -20,7 +20,7 @@ const getProductById = async (id: string): Promise<ProductForApi> => {
 const getProductByCategory = async (
   category: string
 ): Promise<ProductForApi[]> => {
-  const response = await fetch(`http://localhost:5113/api/product/${category}`);
+  const response = await fetch(`http://localhost:5266/api/product/${category}`);
   const productsData = response.json();
   console.log("data by id", productsData);
   return productsData;

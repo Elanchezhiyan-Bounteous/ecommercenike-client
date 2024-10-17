@@ -1,76 +1,139 @@
 "use client";
 
+import React, { useState } from "react";
+import { Button } from "../../components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "../../components/ui/sheet";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "../../components/ui/drawer";
+import { ShoppingCart, X } from "lucide-react";
+import { cartItem, ProductForApi } from "@/src/types/IconTypes";
+import { useAtom } from "jotai";
 import { cartAtom, isCartVisibleAtom } from "@/src/lib/cartAtoms";
-import { cartItem } from "@/src/types/IconTypes";
-import { useAtom, useSetAtom } from "jotai";
-import React from "react";
-import { Typography } from "../common/Typography";
+import { useMediaQuery } from "react-responsive";
+import { useCart } from "@/src/hooks/useCart";
+import { useAddToCart } from "@/src/hooks/useCartApi";
+import { userAtom } from "@/src/lib/authAtoms";
 
-const CartSection = () => {
+export default function CartSection({
+  productId,
+  quantity,
+  product,
+}: cartItem) {
+  const [isOpen, setIsOpen] = useState(false);
   const [cartItems] = useAtom<cartItem[]>(cartAtom);
-  const setIsCartVisible = useSetAtom(isCartVisibleAtom);
+  const isLargeScreen = useMediaQuery({ minWidth: 1024 });
+  const { deleteProductFromCart } = useCart();
+  const [isCartVisible] = useAtom(isCartVisibleAtom);
+  const addToCart = useAddToCart();
+  const [userSession] = useAtom(userAtom);
+  const userId = userSession.id;
 
-  return (
-    <div className="fixed right-0 top-0 w-96 bg-white shadow-lg p-5 rounded-lg z-50">
-      <button
-        onClick={() => {
-          setIsCartVisible(false);
-        }}
-        className="absolute top-2 right-2"
-      >
-        X
-      </button>
-      <h2 className="text-2xl font-bold mb-4">Shopping Cart</h2>
-      <div className="flex flex-col space-y-4">
-        {cartItems.map((item) => (
+  const subtotal = cartItems.reduce(
+    (sum: number, item: cartItem) => sum + item?.product.price * item.quantity,
+    0
+  );
+
+  const CartContent = () => (
+    <div className="flex flex-col h-full">
+      <div className="flex-1 overflow-y-auto">
+        {cartItems.map((item: cartItem) => (
           <div
             key={item.product.id}
-            className="flex items-center justify-between p-3 border rounded-lg"
+            className="flex items-center justify-between py-4 border-b"
           >
-            <div className="flex items-center space-x-2">
-              <div>
-                <h3 className="font-semibold">{item.product.name}</h3>
-                <p className="text-gray-600">
-                  {item.quantity} x Rs. {item.product.price.toLocaleString()}
-                </p>
-              </div>
+            <div className="flex-1">
+              <h3 className="font-semibold">{item.product.name}</h3>
+              <p className="text-sm text-gray-500">QTY: {item.quantity}</p>
             </div>
-            <button className="text-gray-500 hover:text-red-500">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                aria-hidden="true"
+            <div className="flex items-center">
+              <span className="mr-4">${item.product.price}</span>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  deleteProductFromCart(product);
+                }}
               >
-                <path
-                  fillRule="evenodd"
-                  d="M10 9a1 1 0 00-1 1v2a1 1 0 002 0v-2a1 1 0 00-1-1z"
-                  clipRule="evenodd"
-                />
-                <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 10h-2v2a1 1 0 002 0v-2zm-1-10a7 7 0 100 14 7 7 0 000-14z" />
-              </svg>
-            </button>
+                <X className="h-6 w-6" />
+              </Button>
+            </div>
           </div>
         ))}
       </div>
-      <hr className="my-4" />
-      <div className="flex justify-between text-lg font-semibold">
-        <Typography as="p">Subtotal</Typography>
-      </div>
-      <div className="mt-4 flex space-x-4">
-        <button className="flex-1 py-2 border border-gray-300 rounded-lg hover:bg-gray-100">
-          Cart
-        </button>
-        <button className="flex-1 py-2 border border-gray-300 rounded-lg hover:bg-gray-100">
-          Checkout
-        </button>
-        <button className="flex-1 py-2 border border-gray-300 rounded-lg hover:bg-gray-100">
-          Comparison
-        </button>
+      <div className="mt-auto pt-4">
+        <div className="flex justify-between py-2">
+          <span className="font-semibold">Subtotal:</span>
+          <span>${subtotal}</span>
+        </div>
+        <p className="text-sm text-gray-500 mb-4">
+          Shipping and taxes are calculated at checkout.
+        </p>
+        <Button className="w-full mb-2">Checkout</Button>
+        <Button
+          variant="outline"
+          className="w-full"
+          onClick={() => setIsOpen(false)}
+        >
+          Continue Shopping
+        </Button>
       </div>
     </div>
   );
-};
 
-export default CartSection;
+  return (
+    <>
+      {isLargeScreen ? (
+        <div>
+          <Sheet open={isOpen} onOpenChange={setIsOpen}>
+            <SheetTrigger asChild>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  addToCart.mutate({ productId, userId, quantity });
+                }}
+              >
+                Add to Cart
+              </Button>
+            </SheetTrigger>
+            <SheetContent className="w-[400px] sm:w-[540px]">
+              <SheetHeader>
+                <SheetTitle>Shopping Cart</SheetTitle>
+              </SheetHeader>
+              <CartContent />
+            </SheetContent>
+          </Sheet>
+        </div>
+      ) : (
+        <div>
+          <Drawer open={isOpen} onOpenChange={setIsOpen}>
+            <DrawerTrigger asChild>
+              <Button variant="outline">Add to Cart</Button>
+            </DrawerTrigger>
+            <DrawerContent>
+              <DrawerHeader>
+                <DrawerTitle>Shopping Cart</DrawerTitle>
+              </DrawerHeader>
+              <div className="px-4">
+                <CartContent />
+              </div>
+            </DrawerContent>
+          </Drawer>
+        </div>
+      )}
+    </>
+  );
+}
+
+// const [cartItems] = useAtom<cartItem[]>(cartAtom);
+//   const setIsCartVisible = useSetAtom(isCartVisibleAtom);

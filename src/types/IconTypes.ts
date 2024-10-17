@@ -59,14 +59,11 @@ export interface ProductForApi {
   price: number;
   originalPrice: number | null;
   src: string;
-  discount: string | null;
+  specialmention: string | null;
   reviews: Review[];
   rating: number;
-  sku: string;
   category: string;
-  tags: string[];
   sizes: string[];
-  colors: Color[];
   productGallery: ImageForApi[];
   descriptionImages: ImageForApi[];
 }
@@ -81,9 +78,11 @@ export interface SingleProductComponentsProp {
 export interface cartItem {
   product: ProductForApi;
   quantity: number;
+  productId: string;
 }
 
 export interface userSessionProp {
   name: string;
   token: string;
+  id: string;
 }

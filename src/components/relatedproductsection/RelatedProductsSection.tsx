@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ShareIcon from "@/public/assets/icons/ShareIcon";
 import CompareIcon from "@/public/assets/icons/CompareIcon";
 import LikeIcon from "@/public/assets/icons/LikeIcon";
@@ -17,19 +17,22 @@ import { Button } from "../ui/button";
 const RelatedProductsSection = ({
   productDetails,
   isLoading,
+  isSuccess,
 }: SingleProductComponentsProp) => {
+  const router = useRouter();
+
+  useEffect(() => {
+    console.log(productDetails, "hey");
+  }, [isSuccess]);
+
   const [showAll, setShowAll] = useState(false);
 
-  const category = productDetails?.category;
-
   const { data: relatedProducts, isLoading: relatedProductsLoading } =
-    useGetProductsByCategory(category);
+    useGetProductsByCategory(productDetails?.category);
 
   if (isLoading || !productDetails || relatedProductsLoading) {
     return <div>Loading</div>;
   }
-
-  const router = useRouter();
 
   const visibleProducts = showAll
     ? relatedProducts

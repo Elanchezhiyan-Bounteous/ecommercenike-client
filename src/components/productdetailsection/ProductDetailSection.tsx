@@ -2,15 +2,15 @@ import { useState } from "react";
 import { Typography } from "../common/Typography";
 import { useCart } from "@/src/hooks/useCart";
 import { cartItem, SingleProductComponentsProp } from "@/src/types/IconTypes";
-import { useAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import { cartAtom, isCartVisibleAtom } from "@/src/lib/cartAtoms";
-import CartSection from "../cartsection/cartSection";
+import CartSection from "../cartsection/CartSection";
+import { useAddToCart } from "@/src/hooks/useCartApi";
 
 const ProductCard = ({ productDetails }: SingleProductComponentsProp) => {
   const [cartItems, setCartItems] = useAtom<cartItem[]>(cartAtom);
-  const [isCartVisible, setIsCartVisible] = useAtom<boolean>(isCartVisibleAtom);
+  const [isCartVisible, setIsCartVisible] = useAtom(isCartVisibleAtom);
 
-  const { addProductsToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
 
@@ -167,20 +167,11 @@ const ProductCard = ({ productDetails }: SingleProductComponentsProp) => {
       </div>
 
       <div className="flex gap-4">
-        <button
-          className="bg-black text-white  py-2 px-4 rounded-lg w-full"
-          onClick={() => {
-            setIsCartVisible(true);
-            addProductsToCart({ product: productDetails, quantity: quantity });
-          }}
-        >
-          Add to Bag
-        </button>
+        <CartSection product={productDetails} productId={productDetails.id} quantity={quantity} />
         <button className="border py-2 px-4 rounded-lg w-full">
           Add to Wishlist
         </button>
       </div>
-      {isCartVisible && <CartSection />}
     </div>
   );
 };
