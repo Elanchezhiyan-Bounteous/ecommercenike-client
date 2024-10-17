@@ -2,89 +2,89 @@
 
 import Image from "next/image";
 import React, { useState } from "react";
-import Button from "../common/Button";
 import ShareIcon from "@/public/assets/icons/ShareIcon";
 import CompareIcon from "@/public/assets/icons/CompareIcon";
 import LikeIcon from "@/public/assets/icons/LikeIcon";
-import { ProductForApi, SingleProductComponentsProp } from "@/src/types/IconTypes";
+import {
+  ProductForApi,
+  SingleProductComponentsProp,
+} from "@/src/types/IconTypes";
 import { useGetProductsByCategory } from "@/src/hooks/useProduct";
+import { Typography } from "../common/Typography";
+import { useRouter } from "next/navigation";
+import { Button } from "../ui/button";
 
-const RelatedProductsSection = ({productDetails,isLoading}:SingleProductComponentsProp) => {
-
+const RelatedProductsSection = ({
+  productDetails,
+  isLoading,
+}: SingleProductComponentsProp) => {
   const [showAll, setShowAll] = useState(false);
 
   const category = productDetails?.category;
 
-  const {data:relatedProducts, isLoading: relatedProductsLoading} = useGetProductsByCategory(category);
+  const { data: relatedProducts, isLoading: relatedProductsLoading } =
+    useGetProductsByCategory(category);
 
-  if(isLoading || !productDetails || relatedProductsLoading){
-    return <div>Loading</div>
+  if (isLoading || !productDetails || relatedProductsLoading) {
+    return <div>Loading</div>;
   }
 
-  const visibleProducts = showAll ? relatedProducts: (relatedProducts as ProductForApi[]).slice(0, 4);
+  const router = useRouter();
+
+  const visibleProducts = showAll
+    ? relatedProducts
+    : (relatedProducts as ProductForApi[]).slice(0, 3);
   return (
     <div className=" px-8 py-5 md:px-8 md:py-10 lg:px-40 lg:py-12">
-      <h2 className="text-center text-3xl font-semibold pb-6 md:pb-6 lg:pb-10">
-        Related Products
-      </h2>
-      <div className="grid grid-cols-1 gap-y-10 md:grid-cols-3 lg:grid-cols-4 md:gap-y-10 md:gap-x-8 lg:gap-x-10  transition-opacity duration-300">
-        {(visibleProducts as ProductForApi[]).map((product, index) => (
+      <Typography
+        as="h2"
+        className="text-left text-3xl font-semibold pb-6 md:pb-6 md:pl-6 lg:pb-10"
+      >
+        You Might Also Like
+      </Typography>
+      <div
+        className={`transition-all duration-300 ease-in-out grid grid-cols-1 gap-y-10 px-4 py-5 lg:gap-x-4
+            md:grid-cols-2 lg:grid-cols-3 md:gap-y-2 md:gap-x-4 lg:px-8 lg:pb-10 lg:pt-4`}
+      >
+        {visibleProducts?.map((product, index) => (
           <div
+            className="w-full"
+            onClick={() => router.push(`/singleproduct/?id=${product.id}`)}
             key={index}
-            className="relative w-full group transition-transform transform hover:scale-95 hover:shadow-lg"
           >
-            <Image
-              src={product.src}
-              alt={product.name}
-              width={285}
-              height={301}
-              className="w-full"
-            />
-            <div className="p-4 bg-[#F4F5F7] w-full">
-              <h2 className="font-semibold text-xl">{product.name}</h2>
-              <p className="text-gray-500">{product.desc}</p>
-              <div className="mt-2">
-                <span className="text-xl font-bold text-primary">
-                  {product.price}
-                </span>
-                {product.originalPrice && (
-                  <span className="text-gray-400 line-through ml-2">
-                    {product.originalPrice}
-                  </span>
-                )}
+            <div className="relative transition-all duration-300 ease-in-out max-w-full h-full">
+              <div className="h-[75%]">
+                <Image
+                  height={400}
+                  width={400}
+                  src="/assets/nikeimages/nikeairforce1gallery1.png"
+                  alt="Product Image"
+                  className="w-full h-[100%] object-cover"
+                />
               </div>
-              {product.discount && (
-                <div
-                  className={`absolute top-5 right-5 rounded-full ${
-                    product.discount === "New"
-                      ? "bg-[#2EC1AC] py-3 px-2"
-                      : "bg-[#E97171] py-3 px-1"
-                  } text-white font-medium`}
-                >
-                  {product.discount}
-                </div>
-              )}
-            </div>
-            <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 flex flex-col gap-4 justify-center items-center transition-opacity duration-300">
-              <Button variant="v2" size="large" value="Add to cart" />
-              <div className="flex flex-row gap-6 text-white items-center">
-                <div className="flex flex-row gap-1 items-center">
-                  <ShareIcon />
-                  <button className="hover:text-gray-400 font-poppins">
-                    Share
-                  </button>
-                </div>
-                <div className="flex flex-row gap-1 items-center">
-                  <CompareIcon />
-                  <button className="hover:text-gray-400 font-poppins">
-                    Compare
-                  </button>
-                </div>
-                <div className="flex flex-row gap-1 items-center">
-                  <LikeIcon />
-                  <button className="hover:text-gray-400 font-poppins">
-                    Like
-                  </button>
+
+              <div className="pt-1 flex flex-col gap-0 w-full">
+                <Typography as="h2" className="font-[500] text-xl">
+                  Nike Air Force 1 Low Retro Premium
+                </Typography>
+                <Typography as="p" className="text-gray-500 text-lg">
+                  Men's shoes
+                </Typography>
+                <div className="flex flex-row items-center">
+                  <Typography
+                    as="span"
+                    className="text-lg font-[500] text-primary"
+                  >
+                    Rs 10000
+                  </Typography>
+                  {product.originalPrice && (
+                    <Typography
+                      as="span"
+                      className="text-gray-400 line-through ml-2"
+                    >
+                      Rs 15000
+                    </Typography>
+                  )}
                 </div>
               </div>
             </div>
@@ -95,20 +95,22 @@ const RelatedProductsSection = ({productDetails,isLoading}:SingleProductComponen
       <div className="flex justify-center mt-10">
         {showAll ? (
           <Button
-            variant="v5"
-            size="large"
+            variant="outline"
             value="Show Less"
             onClick={() => setShowAll(false)}
-            className="px-16 py-2"
-          />
+            className="px-20 py-2"
+          >
+            Show Less
+          </Button>
         ) : (
           <Button
-            variant="v5"
-            size="large"
+            variant="outline"
             value="Show More"
             onClick={() => setShowAll(true)}
             className="px-20 py-2"
-          />
+          >
+            Show More
+          </Button>
         )}
       </div>
     </div>
