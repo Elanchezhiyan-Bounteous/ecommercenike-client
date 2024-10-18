@@ -1,7 +1,7 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { ProductForApi, userSessionProp } from "../types/IconTypes";
 import { useAtom } from "jotai";
-import { userAtom } from "../lib/authAtoms";
+import { filterAtom } from "../lib/filterAtoms";
 interface Filters {
   gender: string[];
   priceRange: string[];
@@ -39,9 +39,11 @@ const getProductByCategory = async (
 };
 
 const useGetAllProducts = (filter: Filters) => {
+  const [filtersfromjot, setFilter] = useAtom(filterAtom);
+  console.log("use",filtersfromjot)
   return useQuery({
     queryKey: ["filter"],
-    queryFn: () => getAllProducts(filter),
+    queryFn: () => getAllProducts(filtersfromjot),
     staleTime: 0,
   });
 };

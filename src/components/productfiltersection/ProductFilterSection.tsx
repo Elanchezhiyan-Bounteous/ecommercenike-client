@@ -9,6 +9,8 @@ import { Checkbox } from "../ui/checkbox";
 import { Label } from "../ui/label";
 import { QueryClient, useQueryClient } from "@tanstack/react-query";
 import { useGetAllProducts } from "@/src/hooks/useProduct";
+import { filterAtom } from "@/src/lib/filterAtoms";
+import { useAtom } from "jotai";
 interface Filters {
   gender: string[];
   priceRange: string[];
@@ -17,18 +19,11 @@ interface Filters {
 }
 
 const ProductFilters: React.FC = () => {
-  const [filters, setFilters] = useState<Filters>({
-    gender: [],
-    priceRange: [],
-    saleOffers: [],
-    brand: [],
-  });
-
-  const { data: filteredData, isLoading } = useGetAllProducts(filters);
+  const [filters, setFilters] = useAtom(filterAtom);
 
   const handleCheckboxChange = (filterType: keyof Filters, value: string) => {
-    setFilters((prevFilters) => {
-      const updatedFilters = { ...prevFilters };
+    setFilters((filters) => {
+      const updatedFilters = { ...filters };
 
       if (updatedFilters[filterType].includes(value)) {
         updatedFilters[filterType] = updatedFilters[filterType].filter(
@@ -46,16 +41,11 @@ const ProductFilters: React.FC = () => {
     console.log(filters, "filt");
   }, [filters, setFilters]);
 
-  if (isLoading) {
-    return <div>Loaading</div>;
-  }
-
   const queryClient = useQueryClient();
 
   return (
     <div className="p-4">
       <Accordion type="multiple" className="w-full">
-        {/* Gender Filter */}
         <AccordionItem value="gender">
           <AccordionTrigger>Gender</AccordionTrigger>
           <AccordionContent>

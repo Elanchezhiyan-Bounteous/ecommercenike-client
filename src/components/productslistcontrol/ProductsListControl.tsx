@@ -11,7 +11,7 @@ import PaginationControls from "../paginationcontrolsection/PaginationControls";
 import { useGetAllProducts } from "@/src/hooks/useProduct";
 import { ProductForApi } from "@/src/types/IconTypes";
 import { useAtom } from "jotai";
-import { showFilterAtom } from "@/src/lib/filterAtoms";
+import { filterAtom, showFilterAtom } from "@/src/lib/filterAtoms";
 
 import {
   Drawer,
@@ -45,17 +45,15 @@ const ProductsListControl = () => {
   const per_page = searchParams.get("per_page") ?? "16";
 
   const isLargeScreen = useMediaQuery({ minWidth: 1024 });
+  
+  const [filter, setFilter] = useAtom(filterAtom);
   const {
     data: productsofapi,
     isSuccess,
     isLoading,
     isError,
-  } = useGetAllProducts({
-    gender: [],
-    priceRange: [],
-    saleOffers: [],
-    brand: [],
-  });
+  } = useGetAllProducts(filter);
+
   const [showFilter, setShowFilter] = useAtom(showFilterAtom);
 
   const [currentPage, setCurrentPage] = useState<number>(Number(page));
@@ -114,7 +112,6 @@ const ProductsListControl = () => {
     return sortedArray;
   };
 
- 
   const handleFilter = () => {
     setShowFilter(!showFilter);
   };
@@ -128,11 +125,15 @@ const ProductsListControl = () => {
 
       setSortedProducts(updatedProducts);
     }
-  }, [sortOption,  isSuccess, productsofapi]);
+  }, [sortOption, isSuccess, productsofapi]);
 
   const currentProducts =
     sortedProducts.length > 0 ? sortedProducts.slice(start, end) : [];
 
+  useEffect(() => {
+   console.log("filter on listControl", filter)
+  }, [])
+  
   useEffect(() => {
     router.push(`/shop/?page=${currentPage}&per_page=${productsPerPage}`);
   }, [productsPerPage, currentPage]);
