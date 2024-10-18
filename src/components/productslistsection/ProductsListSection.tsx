@@ -9,7 +9,6 @@ import CompareIcon from "@/public/assets/icons/CompareIcon";
 import LikeIcon from "@/public/assets/icons/LikeIcon";
 import { ProductForApi } from "@/src/types/IconTypes";
 import Image from "next/image";
-import ProductFilters from "../productfiltersection/ProductFilterSection";
 import { useAtom } from "jotai";
 import { showFilterAtom } from "@/src/lib/filterAtoms";
 
@@ -51,24 +50,24 @@ const ProductsListSection = ({
 
                 <div className="pt-1 flex flex-col gap-0 w-full">
                   <Typography as="h2" className="font-[500] text-xl">
-                    Nike Air Force 1 Low Retro Premium
+                    {product.name}
                   </Typography>
                   <Typography as="p" className="text-gray-500 text-lg">
-                    Men's shoes
+                    {product.category}
                   </Typography>
                   <div className="flex flex-row items-center">
                     <Typography
                       as="span"
                       className="text-lg font-[500] text-primary"
                     >
-                      Rs 10000
+                     {product.price}
                     </Typography>
                     {product.originalPrice && (
                       <Typography
                         as="span"
                         className="text-gray-400 line-through ml-2"
                       >
-                        Rs 15000
+                        {product.originalPrice}
                       </Typography>
                     )}
                   </div>
@@ -88,7 +87,7 @@ const ProductsListSection = ({
               <img
                 src={product.src}
                 alt={product.name}
-                className="w-full h-auto md:h-[250px] md:w-auto lg:h-[200px] lg:w-auto" // Ensure responsive width and height
+                className="w-full h-auto md:h-[250px] md:w-auto lg:h-[200px] lg:w-auto" 
               />
               <div className="flex flex-col gap-2 flex-1">
                 <Typography as="h2" className="font-semibold text-xl">

@@ -47,10 +47,15 @@ const ProductsListControl = () => {
   const isLargeScreen = useMediaQuery({ minWidth: 1024 });
   const {
     data: productsofapi,
-    isLoading,
     isSuccess,
+    isLoading,
     isError,
-  } = useGetAllProducts();
+  } = useGetAllProducts({
+    gender: [],
+    priceRange: [],
+    saleOffers: [],
+    brand: [],
+  });
   const [showFilter, setShowFilter] = useAtom(showFilterAtom);
 
   const [currentPage, setCurrentPage] = useState<number>(Number(page));
@@ -73,7 +78,6 @@ const ProductsListControl = () => {
 
   const [sortedProducts, setSortedProducts] = useState<ProductForApi[]>([]);
   const [sortOption, setSortOption] = useState<string | number>("Default");
-  const [filterByName, setFilterByName] = useState<string>("");
 
   const options = [
     "Default",
@@ -110,12 +114,7 @@ const ProductsListControl = () => {
     return sortedArray;
   };
 
-  const applyFilter = (products: ProductForApi[], nameFilter: string) => {
-    return products.filter((product) =>
-      product.name.toLowerCase().includes(nameFilter.toLowerCase())
-    );
-  };
-
+ 
   const handleFilter = () => {
     setShowFilter(!showFilter);
   };
@@ -126,10 +125,10 @@ const ProductsListControl = () => {
         productsofapi as ProductForApi[],
         sortOption
       );
-      const filteredProducts = applyFilter(updatedProducts, filterByName);
-      setSortedProducts(filteredProducts);
+
+      setSortedProducts(updatedProducts);
     }
-  }, [sortOption, filterByName, isSuccess, productsofapi]);
+  }, [sortOption,  isSuccess, productsofapi]);
 
   const currentProducts =
     sortedProducts.length > 0 ? sortedProducts.slice(start, end) : [];
@@ -248,7 +247,7 @@ const ProductsListControl = () => {
                 Sort
               </Typography>
               <Dropdown
-                className="w-32 p-3"
+                className="w-40 p-3"
                 options={options}
                 selectedValue={sortOption}
                 onChange={handleSortChange}

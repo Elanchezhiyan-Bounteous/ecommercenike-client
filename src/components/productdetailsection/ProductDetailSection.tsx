@@ -1,15 +1,9 @@
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import { Typography } from "../common/Typography";
-import { useCart } from "@/src/hooks/useCart";
 import { cartItem, SingleProductComponentsProp } from "@/src/types/IconTypes";
-import { useAtom, useSetAtom } from "jotai";
+import { useAtom } from "jotai";
 import { cartAtom, isCartVisibleAtom } from "@/src/lib/cartAtoms";
-import {
-  Cart,
-  useAddToCart,
-  useGetAllProductsInCart,
-} from "@/src/hooks/useCartApi";
-import { userAtom } from "@/src/lib/authAtoms";
+
 import CartSection from "../cartsection/cartSection";
 
 const ProductCard = ({ productDetails }: SingleProductComponentsProp) => {

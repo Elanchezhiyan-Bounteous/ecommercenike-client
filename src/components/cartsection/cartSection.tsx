@@ -39,7 +39,6 @@ export default function CartSection({
   const [isOpen, setIsOpen] = useState(false);
   const [cartItems] = useAtom<cartItem[]>(cartAtom);
   const isLargeScreen = useMediaQuery({ minWidth: 1024 });
-  const [isCartVisible] = useAtom(isCartVisibleAtom);
   const [userSession] = useAtom(userAtom);
   const userId = userSession.id;
   const addToCart = useAddToCart();

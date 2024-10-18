@@ -2,9 +2,7 @@
 
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import ShareIcon from "@/public/assets/icons/ShareIcon";
-import CompareIcon from "@/public/assets/icons/CompareIcon";
-import LikeIcon from "@/public/assets/icons/LikeIcon";
+
 import {
   ProductForApi,
   SingleProductComponentsProp,

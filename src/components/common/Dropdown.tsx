@@ -25,7 +25,7 @@ export default function Dropdown({
       <SelectTrigger className={className}>
         <SelectValue placeholder="Select an option" />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent className="w-40">
         {options.map((option) => (
           <SelectItem key={option} value={option.toString()}>
             {option}

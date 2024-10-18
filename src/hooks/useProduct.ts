@@ -1,11 +1,24 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { ProductForApi, userSessionProp } from "../types/IconTypes";
 import { useAtom } from "jotai";
 import { userAtom } from "../lib/authAtoms";
+interface Filters {
+  gender: string[];
+  priceRange: string[];
+  saleOffers: string[];
+  brand: string[];
+}
 
-const getAllProducts = async (): Promise<ProductForApi[]> => {
-  const response = await fetch("http://localhost:5266/api/product");
+const getAllProducts = async (filter: Filters): Promise<ProductForApi[]> => {
+  const response = await fetch("http://localhost:5266/api/product/filter", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(filter),
+  });
   const productsData = response.json();
+  console.log("hooks", filter);
   return productsData;
 };
 
@@ -25,10 +38,10 @@ const getProductByCategory = async (
   return productsData;
 };
 
-const useGetAllProducts = () => {
+const useGetAllProducts = (filter: Filters) => {
   return useQuery({
-    queryKey: ["product"],
-    queryFn: () => getAllProducts(),
+    queryKey: ["filter"],
+    queryFn: () => getAllProducts(filter),
     staleTime: 0,
   });
 };
