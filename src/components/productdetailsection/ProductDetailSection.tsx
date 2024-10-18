@@ -4,13 +4,13 @@ import { useCart } from "@/src/hooks/useCart";
 import { cartItem, SingleProductComponentsProp } from "@/src/types/IconTypes";
 import { useAtom, useSetAtom } from "jotai";
 import { cartAtom, isCartVisibleAtom } from "@/src/lib/cartAtoms";
-import CartSection from "../cartsection/CartSection";
 import {
   Cart,
   useAddToCart,
   useGetAllProductsInCart,
 } from "@/src/hooks/useCartApi";
 import { userAtom } from "@/src/lib/authAtoms";
+import CartSection from "../cartsection/cartSection";
 
 const ProductCard = ({ productDetails }: SingleProductComponentsProp) => {
   const [cartItems, setCartItems] = useAtom<cartItem[]>(cartAtom);
@@ -46,24 +46,7 @@ const ProductCard = ({ productDetails }: SingleProductComponentsProp) => {
     { size: "UK 12", available: 0 },
   ];
 
-  const [userSession] = useAtom(userAtom);
-  const userId = userSession.id;
-  const addToCart = useAddToCart();
-  const {
-    data: productsOfCart,
-    isLoading,
-    isSuccess,
-  } = useGetAllProductsInCart(userId);
 
-  useEffect(() => {
-    if (isSuccess) {
-      console.log("details", productsOfCart);
-    }
-  }, [isSuccess]);
-
-  if (isLoading) {
-    return <div>Load</div>;
-  }
   return (
     <div className="w-full px-6  lg:px-4 lg:w-1/2 ">
       <Typography as="h1" className="text-2xl font-bold">
@@ -191,7 +174,7 @@ const ProductCard = ({ productDetails }: SingleProductComponentsProp) => {
 
       <div className="flex gap-4">
         <CartSection
-          productsOfCart={productsOfCart[0]}
+       
           product={productDetails}
           productId={productDetails.id}
           quantity={quantity}

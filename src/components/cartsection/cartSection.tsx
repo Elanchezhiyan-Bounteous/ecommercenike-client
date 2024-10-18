@@ -26,6 +26,7 @@ import {
   Cart,
   Product,
   useAddToCart,
+  useDeleteProductFromCart,
   useGetAllProductsInCart,
 } from "@/src/hooks/useCartApi";
 import { userAtom } from "@/src/lib/authAtoms";
@@ -34,7 +35,6 @@ export default function CartSection({
   productId,
   quantity,
   product,
-  productsOfCart,
 }: cartItem) {
   const [isOpen, setIsOpen] = useState(false);
   const [cartItems] = useAtom<cartItem[]>(cartAtom);
@@ -43,14 +43,28 @@ export default function CartSection({
   const [userSession] = useAtom(userAtom);
   const userId = userSession.id;
   const addToCart = useAddToCart();
+  const {
+    data: productsOfCart,
+    isLoading,
+    isSuccess,
+  } = useGetAllProductsInCart(userId);
+
+  const deleteProduct = useDeleteProductFromCart();
+
+  useEffect(() => {
+    if (isSuccess) {
+      console.log("details", productsOfCart);
+    }
+  }, [isSuccess]);
+
+  if (isLoading) {
+    return <div>Loadings</div>;
+  }
 
   const subtotal = cartItems.reduce(
     (sum: number, item: cartItem) => sum + item?.product.price * item.quantity,
     0
   );
-  useEffect(() => {
-    console.log("prod", productsOfCart);
-  }, []);
 
   return (
     <>
@@ -69,9 +83,7 @@ export default function CartSection({
             </SheetTrigger>
             <SheetContent className="w-[400px] sm:w-[540px]">
               <SheetHeader>
-                <SheetTitle>
-                  Shopping Carttt {productsOfCart?.cartId}
-                </SheetTitle>
+                <SheetTitle>Shopping Cart</SheetTitle>
               </SheetHeader>
               <div className="flex flex-col h-full">
                 <div className="flex-1 overflow-y-auto">
@@ -88,7 +100,13 @@ export default function CartSection({
                       </div>
                       <div className="flex items-center">
                         <span className="mr-4">${item.price}</span>
-                        <Button variant="ghost" size="sm" onClick={() => {}}>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            deleteProduct.mutate({ productId, userId });
+                          }}
+                        >
                           <X className="h-6 w-6" />
                         </Button>
                       </div>
@@ -120,7 +138,14 @@ export default function CartSection({
         <div>
           <Drawer open={isOpen} onOpenChange={setIsOpen}>
             <DrawerTrigger asChild>
-              <Button variant="outline">Add to Cart</Button>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  addToCart.mutate({ productId, userId, quantity });
+                }}
+              >
+                Add to Cart
+              </Button>
             </DrawerTrigger>
             <DrawerContent>
               <DrawerHeader>
@@ -142,7 +167,13 @@ export default function CartSection({
                         </div>
                         <div className="flex items-center">
                           <span className="mr-4">${item.price}</span>
-                          <Button variant="ghost" size="sm" onClick={() => {}}>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              deleteProduct.mutate({ productId, userId });
+                            }}
+                          >
                             <X className="h-6 w-6" />
                           </Button>
                         </div>

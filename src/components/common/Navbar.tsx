@@ -10,17 +10,33 @@ import { IoMdClose } from "react-icons/io";
 import { Typography } from "./Typography";
 import { useAtom } from "jotai";
 import { showFilterAtom } from "@/src/lib/filterAtoms";
+import { userAtom } from "@/src/lib/authAtoms";
+import {
+  Cart,
+  useAddToCart,
+  useGetAllProductsInCart,
+} from "@/src/hooks/useCartApi";
+import { useRouter } from "next/navigation";
 
 const Navbar = () => {
+  const router = useRouter();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [showFilter] = useAtom(showFilterAtom)
+  const [showFilter] = useAtom(showFilterAtom);
 
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
 
+  const [userSession] = useAtom(userAtom);
+  const userId = userSession.id;
+  const {
+    data: productsOfCart,
+    isLoading,
+    isSuccess,
+  } = useGetAllProductsInCart(userId);
+
   return (
-    <header className="w-full bg-white text-black justify-between font-montserrat items-center flex flex-row px-4 md:px-14 py-6">
+    <header className="fixed z-50 w-full bg-white text-black justify-between font-montserrat items-center flex flex-row px-4 md:px-14 py-4">
       <div className="flex flex-row items-center gap-1">
         <svg
           aria-hidden="true"
@@ -31,7 +47,6 @@ const Navbar = () => {
           width="24px"
           height="24px"
           fill="none"
-          
         >
           <path
             fill="currentColor"
@@ -70,14 +85,33 @@ const Navbar = () => {
       <div className="hidden lg:flex flex-row gap-12 items-center">
         <ProfileAlertIcon className="w-7 h-7" />
         <SearchIcon className="w-7 h-7" />
-        <HeartIcon className="w-7 h-7" />
-        <div>
+        <div className="relative inline-block">
+          <HeartIcon className="w-7 h-7" />
+          <span className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-black text-white text-xs font-bold rounded-full w-7 h-7 flex items-center justify-center">
+            {(productsOfCart as Cart)?.products.length}
+          </span>
+        </div>
+        <div className="relative inline-block cursor-pointer" onClick={()=>{
+          router.push('/cart')
+        }}>
           <CartIcon className="w-7 h-7" />
+          <span className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-black text-white text-xs font-bold rounded-full w-7 h-7 flex items-center justify-center">
+            {(productsOfCart as Cart)?.products.length}
+          </span>
         </div>
       </div>
 
-      <button className="lg:hidden flex items-center" onClick={toggleDrawer}>
+      <button
+        className="lg:hidden flex flex-row gap-6 items-center"
+        onClick={toggleDrawer}
+      >
         <TbMenuDeep className="w-8 h-8" />
+        <div className="relative inline-block">
+          <CartIcon className="w-7 h-7" />
+          <span className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-black text-white text-xs font-bold rounded-full w-7 h-7 flex items-center justify-center">
+            {(productsOfCart as Cart)?.products.length}
+          </span>
+        </div>
       </button>
 
       <div

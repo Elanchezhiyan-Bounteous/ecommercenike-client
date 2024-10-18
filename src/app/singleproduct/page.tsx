@@ -27,8 +27,12 @@ const SingleProduct = () => {
   return (
     <>
       <BreadCrumbNavigation productDetails={product as ProductForApi} />
-      <div className="flex flex-col py-4 lg:flex-row lg:items-start md:px-4 lg:px-28 lg:pb-10 md:gap-4">
-        <ImageViewer productDetails={product as ProductForApi} isSuccess={isSuccess} isLoading={isLoading}/>
+      <div className="flex flex-col py-4 lg:flex-row lg:items-start md:px-4 lg:px-28 lg:pb-10 lg:pt-16 md:gap-4">
+        <ImageViewer
+          productDetails={product as ProductForApi}
+          isSuccess={isSuccess}
+          isLoading={isLoading}
+        />
         <ProductDetailSection productDetails={product as ProductForApi} />
       </div>
       <hr />

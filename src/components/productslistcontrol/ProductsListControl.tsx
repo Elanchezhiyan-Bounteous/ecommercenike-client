@@ -145,7 +145,7 @@ const ProductsListControl = () => {
 
   return (
     <>
-      <div className="flex flex-col gap-8 justify-center px-6 md:flex-row md:justify-between md:px-8 lg:pt-16 md:items-center transition-all duration-300 ease-in-out">
+      <div className="flex flex-col gap-8 justify-center px-6 pt-24 md:flex-row md:justify-between md:px-8 md:items-center transition-all duration-300 ease-in-out">
         <div className="hidden lg:flex lg:flex-row gap-6 items-center">
           <div onClick={() => toggleView("grid")}>
             <RoundGridIcon
