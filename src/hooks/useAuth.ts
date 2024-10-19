@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useSetAtom } from "jotai";
-import { userAtom } from "../lib/authAtoms";
+import { isAuthenticatedAtom, userAtom } from "../lib/authAtoms";
 
 const login = async (
   email: string,
@@ -25,6 +25,7 @@ const login = async (
 
 const useLogin = () => {
   const setUserSession = useSetAtom(userAtom);
+  const setIsAtuhenticated = useSetAtom(isAuthenticatedAtom);
   return useMutation({
     mutationFn: async (credentials: { email: string; password: string }) => {
       const response = login(credentials.email, credentials.password);
@@ -37,6 +38,7 @@ const useLogin = () => {
           name: response.username,
           id: response.id,
         });
+        setIsAtuhenticated(true);
       }
       //  router.push("/shop");
     },

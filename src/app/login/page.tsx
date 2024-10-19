@@ -16,7 +16,7 @@ const LoginComponent = () => {
   };
 
   return (
-    <div>
+    <div className="py-32">
       <input
         type="email"
         value={email}

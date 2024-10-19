@@ -1,10 +1,13 @@
-import {  useState } from "react";
+import { useState } from "react";
 import { Typography } from "../common/Typography";
 import { cartItem, SingleProductComponentsProp } from "@/src/types/IconTypes";
 import { useAtom } from "jotai";
 import { cartAtom, isCartVisibleAtom } from "@/src/lib/cartAtoms";
 
 import CartSection from "../cartsection/cartSection";
+import { isAuthenticatedAtom } from "@/src/lib/authAtoms";
+import { useToast } from "@/src/hooks/use-toast";
+import { Button } from "../ui/button";
 
 const ProductCard = ({ productDetails }: SingleProductComponentsProp) => {
   const [cartItems, setCartItems] = useAtom<cartItem[]>(cartAtom);
@@ -40,14 +43,16 @@ const ProductCard = ({ productDetails }: SingleProductComponentsProp) => {
     { size: "UK 12", available: 0 },
   ];
 
+  const [isAuthenticated] = useAtom(isAuthenticatedAtom);
+  const { toast } = useToast();
 
   return (
     <div className="w-full px-6  lg:px-4 lg:w-1/2 ">
       <Typography as="h1" className="text-2xl font-bold">
-        Air Force 1
+        {productDetails.name}
       </Typography>
       <Typography as="p" className="text-gray-500">
-        Dominate the game and Just do it!
+        {productDetails.desc}
       </Typography>
 
       <div className="flex items-center my-2">
@@ -58,15 +63,17 @@ const ProductCard = ({ productDetails }: SingleProductComponentsProp) => {
           <Typography as="span">&#9733;</Typography>
           <Typography className="text-gray-300">&#9733;</Typography>
         </div>
-        <p className="text-sm text-gray-500 ml-2">(250 Ratings)</p>
+        <p className="text-sm text-gray-500 ml-2">
+          ({productDetails.reviews.length} Ratings)
+        </p>
       </div>
 
       <div className="flex items-center my-2">
         <Typography as="span" className="text-3xl font-bold text-black">
-          $54.69
+          {productDetails.price}
         </Typography>
         <Typography as="span" className="text-gray-500 ml-4 line-through">
-          $78.66
+          {productDetails.originalPrice}
         </Typography>
       </div>
 
@@ -77,7 +84,7 @@ const ProductCard = ({ productDetails }: SingleProductComponentsProp) => {
           </Typography>
         </div>
         <div className="grid grid-cols-3 gap-2">
-          {sizeData.map((sizeObj, index) => (
+          {productDetails.sizes.map((sizeObj, index) => (
             <button
               key={index}
               onClick={() => setSelectedSize(sizeObj.size)}
@@ -85,15 +92,13 @@ const ProductCard = ({ productDetails }: SingleProductComponentsProp) => {
                 selectedSize === sizeObj.size
                   ? "border-black"
                   : "border-gray-300 text-gray-500"
-              } ${
-                sizeObj.available === 0 ? "bg-gray-100 cursor-not-allowed" : ""
-              }`}
-              disabled={sizeObj.available === 0}
+              } ${sizeObj.stock === 0 ? "bg-gray-100 cursor-not-allowed" : ""}`}
+              disabled={sizeObj.stock === 0}
             >
               {sizeObj.size}
               <Typography as="p" className="block text-xs text-gray-400">
-                {sizeObj.available > 0
-                  ? `${sizeObj.available} available`
+                {sizeObj.stock > 0
+                  ? `${sizeObj.stock} available`
                   : "Out of stock"}
               </Typography>
             </button>
@@ -168,14 +173,27 @@ const ProductCard = ({ productDetails }: SingleProductComponentsProp) => {
 
       <div className="flex gap-4">
         <CartSection
-       
           product={productDetails}
           productId={productDetails.id}
           quantity={quantity}
         />
-        <button className="border py-2 px-4 rounded-lg w-full">
+        <Button
+          variant="outline"
+          className="border py-2 px-4 rounded-lg w-full"
+          onClick={() => {
+            toast({
+              description: "Added to wishList",
+            });
+            if (isAuthenticated) {
+            } else {
+              toast({
+                description: "Please Login to add Items to your Cart",
+              });
+            }
+          }}
+        >
           Add to Wishlist
-        </button>
+        </Button>
       </div>
     </div>
   );

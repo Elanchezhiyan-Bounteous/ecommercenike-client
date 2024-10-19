@@ -34,6 +34,10 @@ export interface ShareLinks {
   twitter: string;
 }
 
+export interface sizes {
+  size: string;
+  stock: number;
+}
 export interface ProductHel {
   id?: string;
   name: string;
@@ -65,7 +69,7 @@ export interface ProductForApi {
   reviews: Review[];
   rating: number;
   category: string;
-  sizes: string[];
+  sizes: sizes[];
   productGallery: ImageForApi[];
   descriptionImages: ImageForApi[];
 }

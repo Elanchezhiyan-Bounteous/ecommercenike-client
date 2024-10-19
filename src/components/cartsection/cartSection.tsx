@@ -21,7 +21,8 @@ import { cartItem, ProductForApi } from "@/src/types/IconTypes";
 import { useAtom } from "jotai";
 import { cartAtom, isCartVisibleAtom } from "@/src/lib/cartAtoms";
 import { useMediaQuery } from "react-responsive";
-import { useCart } from "@/src/hooks/useCart";
+import { useToast } from "../../hooks/use-toast";
+
 import {
   Cart,
   Product,
@@ -29,14 +30,17 @@ import {
   useDeleteProductFromCart,
   useGetAllProductsInCart,
 } from "@/src/hooks/useCartApi";
-import { userAtom } from "@/src/lib/authAtoms";
+import { isAuthenticatedAtom, userAtom } from "@/src/lib/authAtoms";
 
 export default function CartSection({
   productId,
   quantity,
   product,
 }: cartItem) {
+  const [isAuthenticated] = useAtom(isAuthenticatedAtom);
+
   const [isOpen, setIsOpen] = useState(false);
+  const { toast } = useToast();
   const [cartItems] = useAtom<cartItem[]>(cartAtom);
   const isLargeScreen = useMediaQuery({ minWidth: 1024 });
   const [userSession] = useAtom(userAtom);
@@ -57,7 +61,7 @@ export default function CartSection({
   }, [isSuccess]);
 
   if (isLoading) {
-    return <div>Loadings</div>;
+    return <div>Loading</div>;
   }
 
   const subtotal = cartItems.reduce(
@@ -74,63 +78,71 @@ export default function CartSection({
               <Button
                 variant="outline"
                 onClick={() => {
-                  addToCart.mutate({ productId, userId, quantity });
+                  if (isAuthenticated) {
+                    addToCart.mutate({ productId, userId, quantity });
+                  } else {
+                    toast({
+                      description: "Please Login to add Items to your Cart",
+                    });
+                  }
                 }}
               >
                 Add to Cart
               </Button>
             </SheetTrigger>
-            <SheetContent className="w-[400px] sm:w-[540px]">
-              <SheetHeader>
-                <SheetTitle>Shopping Cart</SheetTitle>
-              </SheetHeader>
-              <div className="flex flex-col h-full">
-                <div className="flex-1 overflow-y-auto">
-                  {(productsOfCart as Cart).products?.map((item) => (
-                    <div
-                      key={item.productId}
-                      className="flex items-center justify-between py-4 border-b"
-                    >
-                      <div className="flex-1">
-                        <h3 className="font-semibold">{item.name}</h3>
-                        <p className="text-sm text-gray-500">
-                          QTY: {item.quantity}
-                        </p>
+            {isAuthenticated && (
+              <SheetContent className="w-[400px] sm:w-[540px]">
+                <SheetHeader>
+                  <SheetTitle>Shopping Cart</SheetTitle>
+                </SheetHeader>
+                <div className="flex flex-col h-full">
+                  <div className="flex-1 overflow-y-auto">
+                    {(productsOfCart as Cart)?.products?.map((item) => (
+                      <div
+                        key={item.productId}
+                        className="flex items-center justify-between py-4 border-b"
+                      >
+                        <div className="flex-1">
+                          <h3 className="font-semibold">{item.name}</h3>
+                          <p className="text-sm text-gray-500">
+                            QTY: {item.quantity}
+                          </p>
+                        </div>
+                        <div className="flex items-center">
+                          <span className="mr-4">${item.price}</span>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              deleteProduct.mutate({ productId, userId });
+                            }}
+                          >
+                            <X className="h-6 w-6" />
+                          </Button>
+                        </div>
                       </div>
-                      <div className="flex items-center">
-                        <span className="mr-4">${item.price}</span>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => {
-                            deleteProduct.mutate({ productId, userId });
-                          }}
-                        >
-                          <X className="h-6 w-6" />
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-auto pt-4">
-                  <div className="flex justify-between py-2">
-                    <span className="font-semibold">Subtotal:</span>
-                    <span>$</span>
+                    ))}
                   </div>
-                  <p className="text-sm text-gray-500 mb-4">
-                    Shipping and taxes are calculated at checkout.
-                  </p>
-                  <Button className="w-full mb-2">Checkout</Button>
-                  <Button
-                    variant="outline"
-                    className="w-full"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    Continue Shopping
-                  </Button>
+                  <div className="mt-auto pt-4">
+                    <div className="flex justify-between py-2">
+                      <span className="font-semibold">Subtotal:</span>
+                      <span>${subtotal}</span>
+                    </div>
+                    <p className="text-sm text-gray-500 mb-4">
+                      Shipping and taxes are calculated at checkout.
+                    </p>
+                    <Button className="w-full mb-2">Checkout</Button>
+                    <Button
+                      variant="outline"
+                      className="w-full"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      Continue Shopping
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            </SheetContent>
+              </SheetContent>
+            )}
           </Sheet>
         </div>
       ) : (
@@ -153,7 +165,7 @@ export default function CartSection({
               <div className="px-4">
                 <div className="flex flex-col h-full">
                   <div className="flex-1 overflow-y-auto">
-                    {(productsOfCart as Cart).products?.map((item) => (
+                    {(productsOfCart as Cart)?.products?.map((item) => (
                       <div
                         key={item.productId}
                         className="flex items-center justify-between py-4 border-b"

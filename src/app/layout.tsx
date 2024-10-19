@@ -6,6 +6,7 @@ import Footer from "../components/common/Footer";
 import React, { Suspense } from "react";
 import ReactQueryProvider from "../components/reactqueryprovider/ReactQueryProvider";
 import { Provider as JotaiProvider } from "jotai";
+import { Toaster } from "../components/ui/toaster";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -38,6 +39,7 @@ export default function RootLayout({
             <JotaiProvider>
               <Navbar />
               {children}
+              <Toaster />
               <Footer />
             </JotaiProvider>
           </ReactQueryProvider>
