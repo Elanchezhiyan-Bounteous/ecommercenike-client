@@ -65,7 +65,7 @@ export interface ProductForApi {
   price: number;
   originalPrice: number | null;
   src: string;
-  specialmention: string | null;
+  specialMention: string | null;
   reviews: Review[];
   rating: number;
   category: string;

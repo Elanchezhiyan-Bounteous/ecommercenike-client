@@ -10,7 +10,13 @@ import { IoMdClose } from "react-icons/io";
 import { Typography } from "./Typography";
 import { useAtom } from "jotai";
 import { showFilterAtom } from "@/src/lib/filterAtoms";
-import { userAtom } from "@/src/lib/authAtoms";
+import { isAuthenticatedAtom, userAtom } from "@/src/lib/authAtoms";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "../../components/ui/hover-card";
+
 import {
   Cart,
   useAddToCart,
@@ -34,6 +40,7 @@ const Navbar = () => {
     isLoading,
     isSuccess,
   } = useGetAllProductsInCart(userId);
+  const isAuthenticated = useAtom(isAuthenticatedAtom);
 
   return (
     <header className="fixed z-50 w-full bg-white text-black justify-between font-montserrat items-center flex flex-row px-4 md:px-14 py-4">
@@ -83,7 +90,49 @@ const Navbar = () => {
         </Link>
       </div>
       <div className="hidden lg:flex flex-row gap-12 items-center">
-        <ProfileAlertIcon className="w-7 h-7" />
+        {isAuthenticated ? (
+          <HoverCard>
+            <HoverCardTrigger className="cursor-pointer">
+              <ProfileAlertIcon className="w-7 h-7 " />
+            </HoverCardTrigger>
+            <HoverCardContent
+              className="w-24 cursor-pointer"
+              onClick={() => {
+                router.push("/shop");
+              }}
+            >
+              Logout
+            </HoverCardContent>
+          </HoverCard>
+        ) : (
+          <HoverCard>
+            <HoverCardTrigger className="cursor-pointer">
+              <ProfileAlertIcon className="w-7 h-7 " />
+            </HoverCardTrigger>
+            <HoverCardContent
+              className="w-24 cursor-pointer"
+              onClick={() => {
+                router.push("login");
+              }}
+            >
+              Login!
+            </HoverCardContent>
+          </HoverCard>
+        )}
+        <HoverCard>
+          <HoverCardTrigger className="cursor-pointer">
+            <ProfileAlertIcon className="w-7 h-7 " />
+          </HoverCardTrigger>
+          <HoverCardContent
+            className="w-24 cursor-pointer"
+            onClick={() => {
+              router.push("login");
+            }}
+          >
+            Login!
+          </HoverCardContent>
+        </HoverCard>
+
         <SearchIcon className="w-7 h-7" />
         <div className="relative inline-block">
           <HeartIcon className="w-7 h-7" />
@@ -91,9 +140,12 @@ const Navbar = () => {
             {(productsOfCart as Cart)?.products.length}
           </span>
         </div>
-        <div className="relative inline-block cursor-pointer" onClick={()=>{
-          router.push('/cart')
-        }}>
+        <div
+          className="relative inline-block cursor-pointer"
+          onClick={() => {
+            router.push("/cart");
+          }}
+        >
           <CartIcon className="w-7 h-7" />
           <span className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-black text-white text-xs font-bold rounded-full w-7 h-7 flex items-center justify-center">
             {(productsOfCart as Cart)?.products.length}

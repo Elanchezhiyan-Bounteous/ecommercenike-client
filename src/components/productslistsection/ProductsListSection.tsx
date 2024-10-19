@@ -11,6 +11,8 @@ import { ProductForApi } from "@/src/types/IconTypes";
 import Image from "next/image";
 import { useAtom } from "jotai";
 import { showFilterAtom } from "@/src/lib/filterAtoms";
+import CartIcon from "@/public/assets/icons/CartIcon";
+import HeartIcon from "@/public/assets/icons/HeartIcon";
 
 interface ProductListSectionProps {
   products: ProductForApi[];
@@ -48,28 +50,44 @@ const ProductsListSection = ({
                   />
                 </div>
 
-                <div className="pt-1 flex flex-col gap-0 w-full">
-                  <Typography as="h2" className="font-[500] text-xl">
-                    {product.name}
-                  </Typography>
-                  <Typography as="p" className="text-gray-500 text-lg">
-                    {product.category}
-                  </Typography>
-                  <div className="flex flex-row items-center">
+                <div className="w-full flex flex-row justify-between">
+                  <div className="pt-1 flex flex-col gap-0 w-full">
                     <Typography
-                      as="span"
-                      className="text-lg font-[500] text-primary"
+                      as="h2"
+                      className="font-[500] text-lg  text-amber-900"
                     >
-                     {product.price}
+                      {product?.specialMention}
                     </Typography>
-                    {product.originalPrice && (
+                    <Typography as="h2" className="font-[500] text-xl">
+                      {product.name}
+                    </Typography>
+                    <Typography as="p" className="text-gray-500 text-lg">
+                      {product.category}
+                    </Typography>
+                    <div className="flex flex-row items-center">
                       <Typography
                         as="span"
-                        className="text-gray-400 line-through ml-2"
+                        className="text-lg font-[500] text-primary"
                       >
-                        {product.originalPrice}
+                        {product.price}
                       </Typography>
-                    )}
+                      {product.originalPrice && (
+                        <Typography
+                          as="span"
+                          className="text-gray-400 line-through ml-2"
+                        >
+                          {product.originalPrice}
+                        </Typography>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex flex-col justify-center items-center gap-5 pr-6">
+                    <div className="w-8 h-8">
+                      <CartIcon />
+                    </div>
+                    <div className="w-7 h-7">
+                      <HeartIcon />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -87,7 +105,7 @@ const ProductsListSection = ({
               <img
                 src={product.src}
                 alt={product.name}
-                className="w-full h-auto md:h-[250px] md:w-auto lg:h-[200px] lg:w-auto" 
+                className="w-full h-auto md:h-[250px] md:w-auto lg:h-[200px] lg:w-auto"
               />
               <div className="flex flex-col gap-2 flex-1">
                 <Typography as="h2" className="font-semibold text-xl">
