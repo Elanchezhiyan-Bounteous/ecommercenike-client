@@ -9,8 +9,6 @@ import CompareIcon from "@/public/assets/icons/CompareIcon";
 import LikeIcon from "@/public/assets/icons/LikeIcon";
 import { ProductForApi } from "@/src/types/IconTypes";
 import Image from "next/image";
-import { useAtom } from "jotai";
-import { showFilterAtom } from "@/src/lib/filterAtoms";
 import CartIcon from "@/public/assets/icons/CartIcon";
 import HeartIcon from "@/public/assets/icons/HeartIcon";
 
@@ -24,7 +22,6 @@ const ProductsListSection = ({
   gridView,
 }: ProductListSectionProps) => {
   const router = useRouter();
-  const [showFilter] = useAtom(showFilterAtom);
 
   return (
     <div className="">
@@ -44,7 +41,7 @@ const ProductsListSection = ({
                   <Image
                     height={400}
                     width={400}
-                    src="/assets/nikeimages/nikeairforce1gallery1.png"
+                    src={product.src}
                     alt="Product Image"
                     className="w-full h-[100%] object-cover"
                   />

@@ -1,6 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { cartItem } from "../types/IconTypes";
 import { useGetProductsById } from "./useProduct";
+import { useAtom } from "jotai";
+import { userAtom } from "../lib/authAtoms";
 
 export interface Product {
   productId: string;
@@ -18,12 +20,14 @@ export interface Cart {
 const addToCart = async (
   userId: string,
   productId: string,
-  quantity: number
-): Promise<Cart> => {
+  quantity: number,
+  token: string
+) => {
   const response = await fetch("http://localhost:5266/api/cart/add", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({ userId, productId, quantity }),
   });
@@ -37,13 +41,18 @@ const addToCart = async (
   return data;
 };
 
-const deleteProductFromCart = async (productId: string, userId: string) => {
+const deleteProductFromCart = async (
+  productId: string,
+  userId: string,
+  token: string
+) => {
   const response = await fetch(
     `http://localhost:5266/api/cart/${userId}/${productId}`,
     {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
     }
   );
@@ -53,8 +62,15 @@ const deleteProductFromCart = async (productId: string, userId: string) => {
   console.log("Deleted From Cart");
 };
 
-const getAllProductsInCart = async (id: string): Promise<Cart> => {
-  const response = await fetch(`http://localhost:5266/api/cart/${id}`);
+const getAllProductsInCart = async (
+  userId: string,
+  token: string
+): Promise<Cart> => {
+  const response = await fetch(`http://localhost:5266/api/cart/${userId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
   const productsData = response.json();
   console.log("cart Data", productsData);
   return productsData;
@@ -62,13 +78,12 @@ const getAllProductsInCart = async (id: string): Promise<Cart> => {
 
 const useAddToCart = () => {
   const queryClient = useQueryClient();
+  const [userSession] = useAtom(userAtom);
+  const token = userSession.token;
+  const userId = userSession.id;
   return useMutation({
-    mutationFn: async (cart: {
-      userId: string;
-      productId: string;
-      quantity: number;
-    }) => {
-      const response = addToCart(cart.userId, cart.productId, cart.quantity);
+    mutationFn: async (cart: { productId: string; quantity: number }) => {
+      const response = addToCart(userId, cart.productId, cart.quantity, token);
       return response;
     },
 
@@ -85,9 +100,13 @@ const useAddToCart = () => {
 
 const useDeleteProductFromCart = () => {
   const queryClient = useQueryClient();
+  const [userSession] = useAtom(userAtom);
+  const token = userSession.token;
+  const userId = userSession.id;
+
   return useMutation({
-    mutationFn: async (cart: { productId: string; userId: string }) => {
-      const response = deleteProductFromCart(cart.productId, cart.userId);
+    mutationFn: async (cart: { productId: string }) => {
+      const response = deleteProductFromCart(cart.productId, userId, token);
       return response;
     },
 
@@ -101,10 +120,13 @@ const useDeleteProductFromCart = () => {
   });
 };
 
-const useGetAllProductsInCart = (id: string) => {
+const useGetAllProductsInCart = () => {
+  const [userSession] = useAtom(userAtom);
+  const token = userSession.token;
+  const userId = userSession.id;
   return useQuery({
-    queryKey: ["getcart", id],
-    queryFn: () => getAllProductsInCart(id),
+    queryKey: ["getcart", userId],
+    queryFn: () => getAllProductsInCart(userId, token),
     staleTime: 0,
     refetchOnWindowFocus: true,
   });

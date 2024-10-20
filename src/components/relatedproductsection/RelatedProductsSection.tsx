@@ -58,7 +58,7 @@ const RelatedProductsSection = ({
                 <Image
                   height={400}
                   width={400}
-                  src="/assets/nikeimages/nikeairforce1gallery1.png"
+                  src={product.src}
                   alt="Product Image"
                   className="w-full h-[100%] object-cover"
                 />

@@ -11,3 +11,7 @@ export const isAuthenticatedAtom = atomWithStorage<boolean>(
   "authenticated",
   false
 );
+
+export const removeUser = () => {
+  localStorage.removeItem("user");
+};

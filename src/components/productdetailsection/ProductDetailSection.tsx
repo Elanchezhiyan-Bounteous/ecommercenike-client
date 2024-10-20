@@ -10,15 +10,11 @@ import { useToast } from "@/src/hooks/use-toast";
 import { Button } from "../ui/button";
 
 const ProductCard = ({ productDetails }: SingleProductComponentsProp) => {
-  const [cartItems, setCartItems] = useAtom<cartItem[]>(cartAtom);
-  const [isCartVisible, setIsCartVisible] = useAtom(isCartVisibleAtom);
-
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
 
   const handleIncreaseQuantity = () => {
     setQuantity(quantity + 1);
-    console.log(cartItems);
   };
 
   const handleDecreaseQuantity = () => {
@@ -26,22 +22,6 @@ const ProductCard = ({ productDetails }: SingleProductComponentsProp) => {
       setQuantity(quantity - 1);
     }
   };
-
-  const sizeData = [
-    { size: "UK 6 (EU 40)", available: 5 },
-    { size: "UK 6.5", available: 2 },
-    { size: "UK 7", available: 0 },
-    { size: "UK 7.5", available: 10 },
-    { size: "UK 8", available: 1 },
-    { size: "UK 8.5", available: 0 },
-    { size: "UK 9", available: 3 },
-    { size: "UK 9.5", available: 0 },
-    { size: "UK 10", available: 4 },
-    { size: "UK 10.5", available: 0 },
-    { size: "UK 11", available: 6 },
-    { size: "UK 11.5", available: 1 },
-    { size: "UK 12", available: 0 },
-  ];
 
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
   const { toast } = useToast();
@@ -179,7 +159,7 @@ const ProductCard = ({ productDetails }: SingleProductComponentsProp) => {
         />
         <Button
           variant="outline"
-          className="border py-2 px-4 rounded-lg w-full"
+          className="border py-2 px-4 rounded-lg w-1/2"
           onClick={() => {
             toast({
               description: "Added to wishList",

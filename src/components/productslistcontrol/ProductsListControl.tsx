@@ -17,7 +17,6 @@ import {
   Drawer,
   DrawerClose,
   DrawerContent,
-  DrawerDescription,
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
@@ -29,7 +28,6 @@ import {
   Sheet,
   SheetClose,
   SheetContent,
-  SheetDescription,
   SheetFooter,
   SheetHeader,
   SheetTitle,
@@ -41,18 +39,17 @@ const ProductsListControl = () => {
   const searchParams = useSearchParams();
   const [open, setOpen] = useState(false);
 
-  const page = searchParams.get("page") ?? "1";
-  const per_page = searchParams.get("per_page") ?? "16";
-
-  const isLargeScreen = useMediaQuery({ minWidth: 1024 });
-  
-  const [filter, setFilter] = useAtom(filterAtom);
+  const [filter] = useAtom(filterAtom);
   const {
     data: productsofapi,
     isSuccess,
     isLoading,
     isError,
   } = useGetAllProducts(filter);
+  const page = searchParams.get("page") ?? "1";
+  const per_page = searchParams.get("per_page") ?? "16";
+
+  const isLargeScreen = useMediaQuery({ minWidth: 1024 });
 
   const [showFilter, setShowFilter] = useAtom(showFilterAtom);
 
@@ -131,9 +128,9 @@ const ProductsListControl = () => {
     sortedProducts.length > 0 ? sortedProducts.slice(start, end) : [];
 
   useEffect(() => {
-   console.log("filter on listControl", filter)
-  }, [])
-  
+    console.log("filter on listControl", filter);
+  }, []);
+
   useEffect(() => {
     router.push(`/shop/?page=${currentPage}&per_page=${productsPerPage}`);
   }, [productsPerPage, currentPage]);

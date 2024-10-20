@@ -29,13 +29,12 @@ const CartPage = () => {
     },
   ]);
 
-  const [userSession] = useAtom(userAtom);
-  const userId = userSession.id;
+  
   const {
     data: productsOfCart,
     isLoading,
     isSuccess,
-  } = useGetAllProductsInCart(userId);
+  } = useGetAllProductsInCart();
 
   const deleteProduct = useDeleteProductFromCart();
 
@@ -57,7 +56,7 @@ const CartPage = () => {
             </tr>
           </thead>
           <tbody>
-            {(productsOfCart as Cart).products?.map((item) => (
+            {(productsOfCart as Cart)?.products?.map((item) => (
               <tr key={item.productId} className="border-b">
                 <td className="py-4 flex items-center">
                   <div>
@@ -70,7 +69,7 @@ const CartPage = () => {
                       <div
                         onClick={() =>
                           deleteProduct.mutate({
-                            userId,
+                          
                             productId: item.productId,
                           })
                         }
@@ -117,7 +116,7 @@ const CartPage = () => {
           <Typography as="p">Sub Total</Typography>
           <Typography as="p">
             $
-            {(productsOfCart as Cart).products
+            {(productsOfCart as Cart)?.products
               .reduce((acc, p) => acc + p.price * p.quantity, 0)
               .toFixed(2)}
           </Typography>

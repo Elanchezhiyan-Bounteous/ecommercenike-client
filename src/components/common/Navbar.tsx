@@ -10,7 +10,7 @@ import { IoMdClose } from "react-icons/io";
 import { Typography } from "./Typography";
 import { useAtom } from "jotai";
 import { showFilterAtom } from "@/src/lib/filterAtoms";
-import { isAuthenticatedAtom, userAtom } from "@/src/lib/authAtoms";
+import { isAuthenticatedAtom, removeUser, userAtom } from "@/src/lib/authAtoms";
 import {
   HoverCard,
   HoverCardContent,
@@ -23,6 +23,7 @@ import {
   useGetAllProductsInCart,
 } from "@/src/hooks/useCartApi";
 import { useRouter } from "next/navigation";
+import { cn } from "@/src/utils/cn";
 
 const Navbar = () => {
   const router = useRouter();
@@ -33,14 +34,13 @@ const Navbar = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
 
-  const [userSession] = useAtom(userAtom);
-  const userId = userSession.id;
+
   const {
     data: productsOfCart,
     isLoading,
     isSuccess,
-  } = useGetAllProductsInCart(userId);
-  const isAuthenticated = useAtom(isAuthenticatedAtom);
+  } = useGetAllProductsInCart();
+  const [isAuthenticated, setIsAuthenticated] = useAtom(isAuthenticatedAtom);
 
   return (
     <header className="fixed z-50 w-full bg-white text-black justify-between font-montserrat items-center flex flex-row px-4 md:px-14 py-4">
@@ -90,25 +90,24 @@ const Navbar = () => {
         </Link>
       </div>
       <div className="hidden lg:flex flex-row gap-12 items-center">
-        {isAuthenticated ? (
-          <HoverCard>
-            <HoverCardTrigger className="cursor-pointer">
-              <ProfileAlertIcon className="w-7 h-7 " />
-            </HoverCardTrigger>
+        <HoverCard>
+          <HoverCardTrigger className="cursor-pointer">
+            <ProfileAlertIcon className="w-7 h-7 " />
+          </HoverCardTrigger>
+          {isAuthenticated ? (
             <HoverCardContent
               className="w-24 cursor-pointer"
               onClick={() => {
-                router.push("/shop");
+                {
+                  router.push("/shop");
+                }
+                removeUser();
+                setIsAuthenticated(false);
               }}
             >
               Logout
             </HoverCardContent>
-          </HoverCard>
-        ) : (
-          <HoverCard>
-            <HoverCardTrigger className="cursor-pointer">
-              <ProfileAlertIcon className="w-7 h-7 " />
-            </HoverCardTrigger>
+          ) : (
             <HoverCardContent
               className="w-24 cursor-pointer"
               onClick={() => {
@@ -117,40 +116,36 @@ const Navbar = () => {
             >
               Login!
             </HoverCardContent>
-          </HoverCard>
-        )}
-        <HoverCard>
-          <HoverCardTrigger className="cursor-pointer">
-            <ProfileAlertIcon className="w-7 h-7 " />
-          </HoverCardTrigger>
-          <HoverCardContent
-            className="w-24 cursor-pointer"
-            onClick={() => {
-              router.push("login");
-            }}
-          >
-            Login!
-          </HoverCardContent>
+          )}
         </HoverCard>
 
         <SearchIcon className="w-7 h-7" />
-        <div className="relative inline-block">
+        {isAuthenticated && (productsOfCart as Cart)?.products.length > 0 ? (
+          <div className="relative inline-block">
+            <HeartIcon className="w-7 h-7" />
+            <span className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-black text-white text-xs font-bold rounded-full w-7 h-7 flex items-center justify-center">
+              {(productsOfCart as Cart)?.products.length}
+            </span>
+          </div>
+        ) : (
           <HeartIcon className="w-7 h-7" />
-          <span className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-black text-white text-xs font-bold rounded-full w-7 h-7 flex items-center justify-center">
-            {(productsOfCart as Cart)?.products.length}
-          </span>
-        </div>
-        <div
-          className="relative inline-block cursor-pointer"
-          onClick={() => {
-            router.push("/cart");
-          }}
-        >
+        )}
+
+        {isAuthenticated && (productsOfCart as Cart)?.products.length > 0 ? (
+          <div
+            className="relative inline-block cursor-pointer"
+            onClick={() => {
+              router.push("/cart");
+            }}
+          >
+            <CartIcon className="w-7 h-7" />
+            <span className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-black text-white text-xs font-bold rounded-full w-7 h-7 flex items-center justify-center">
+              {(productsOfCart as Cart)?.products.length}
+            </span>
+          </div>
+        ) : (
           <CartIcon className="w-7 h-7" />
-          <span className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-black text-white text-xs font-bold rounded-full w-7 h-7 flex items-center justify-center">
-            {(productsOfCart as Cart)?.products.length}
-          </span>
-        </div>
+        )}
       </div>
 
       <button

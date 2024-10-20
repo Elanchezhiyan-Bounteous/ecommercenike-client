@@ -38,19 +38,20 @@ export default function CartSection({
   product,
 }: cartItem) {
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
+  const [userSession] = useAtom(userAtom);
+  const userId = userSession.id;
 
   const [isOpen, setIsOpen] = useState(false);
   const { toast } = useToast();
   const [cartItems] = useAtom<cartItem[]>(cartAtom);
   const isLargeScreen = useMediaQuery({ minWidth: 1024 });
-  const [userSession] = useAtom(userAtom);
-  const userId = userSession.id;
+
   const addToCart = useAddToCart();
   const {
     data: productsOfCart,
     isLoading,
     isSuccess,
-  } = useGetAllProductsInCart(userId);
+  } = useGetAllProductsInCart();
 
   const deleteProduct = useDeleteProductFromCart();
 
@@ -76,10 +77,11 @@ export default function CartSection({
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
               <Button
+                className="w-80"
                 variant="outline"
                 onClick={() => {
                   if (isAuthenticated) {
-                    addToCart.mutate({ productId, userId, quantity });
+                    addToCart.mutate({ productId, quantity });
                   } else {
                     toast({
                       description: "Please Login to add Items to your Cart",
@@ -114,7 +116,7 @@ export default function CartSection({
                             variant="ghost"
                             size="sm"
                             onClick={() => {
-                              deleteProduct.mutate({ productId, userId });
+                              deleteProduct.mutate({ productId });
                             }}
                           >
                             <X className="h-6 w-6" />
@@ -152,7 +154,7 @@ export default function CartSection({
               <Button
                 variant="outline"
                 onClick={() => {
-                  addToCart.mutate({ productId, userId, quantity });
+                  addToCart.mutate({ productId, quantity });
                 }}
               >
                 Add to Cart
@@ -182,7 +184,7 @@ export default function CartSection({
                             variant="ghost"
                             size="sm"
                             onClick={() => {
-                              deleteProduct.mutate({ productId, userId });
+                              deleteProduct.mutate({ productId });
                             }}
                           >
                             <X className="h-6 w-6" />

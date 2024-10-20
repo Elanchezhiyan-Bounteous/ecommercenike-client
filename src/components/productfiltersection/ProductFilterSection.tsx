@@ -7,7 +7,7 @@ import {
 } from "../ui/accordion";
 import { Checkbox } from "../ui/checkbox";
 import { Label } from "../ui/label";
-import { QueryClient, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useGetAllProducts } from "@/src/hooks/useProduct";
 import { filterAtom } from "@/src/lib/filterAtoms";
 import { useAtom } from "jotai";
@@ -20,6 +20,7 @@ interface Filters {
 
 const ProductFilters: React.FC = () => {
   const [filters, setFilters] = useAtom(filterAtom);
+  const { refetch } = useGetAllProducts(filters);
 
   const handleCheckboxChange = (filterType: keyof Filters, value: string) => {
     setFilters((filters) => {
@@ -39,6 +40,7 @@ const ProductFilters: React.FC = () => {
 
   useEffect(() => {
     console.log(filters, "filt");
+     refetch();
   }, [filters, setFilters]);
 
   const queryClient = useQueryClient();
@@ -154,7 +156,7 @@ const ProductFilters: React.FC = () => {
                   checked={filters.saleOffers.includes("Best Seller")}
                   onCheckedChange={() => {
                     handleCheckboxChange("saleOffers", "Best Seller");
-                    queryClient.refetchQueries({ queryKey: ["filter"] });
+                  //  queryClient.refetchQueries({ queryKey: ["filter"] });
                   }}
                 />
                 <Label htmlFor="bestseller">Best Seller</Label>
@@ -165,7 +167,7 @@ const ProductFilters: React.FC = () => {
                   checked={filters.saleOffers.includes("Just In")}
                   onCheckedChange={() => {
                     handleCheckboxChange("saleOffers", "Just In");
-                    queryClient.refetchQueries({ queryKey: ["filter"] });
+                   // queryClient.refetchQueries({ queryKey: ["filter"] });
                   }}
                 />
                 <Label htmlFor="justin">Just In</Label>
