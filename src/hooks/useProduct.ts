@@ -1,24 +1,42 @@
 import { useQuery } from "@tanstack/react-query";
-import { ProductForApi, userSessionProp } from "../types/IconTypes";
+import {
+  Filters,
+  ProductForApi,
+  QueryRequest,
+  userSessionProp,
+} from "../types/IconTypes";
 import { useAtom } from "jotai";
-import { filterAtom } from "../lib/filterAtoms";
-interface Filters {
-  gender: string[];
-  priceRange: string[];
-  saleOffers: string[];
-  brand: string[];
-}
+import { filterAtom, queryAtom } from "../lib/filterAtoms";
 
-const getAllProducts = async (filter: Filters): Promise<ProductForApi[]> => {
-  const response = await fetch("http://localhost:5266/api/product/filter", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(filter),
-  });
-  const productsData = response.json();
+const createQueryString = (params: any) => {
+  return Object.keys(params)
+    .map(
+      (key) => encodeURIComponent(key) + "=" + encodeURIComponent(params[key])
+    )
+    .join("&");
+};
+
+const getAllProducts = async (
+  filter: Filters,
+  queryreq: QueryRequest
+): Promise<ProductForApi[]> => {
   console.log("hooks", filter);
+  const queryString = createQueryString(queryreq);
+  console.log("query", queryString);
+  const response = await fetch(
+    `http://localhost:5266/api/product/filter?${queryString}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        filter,
+      }),
+    }
+  );
+  console.log(response, "response");
+  const productsData = response.json();
   return productsData;
 };
 
@@ -40,10 +58,11 @@ const getProductByCategory = async (
 
 const useGetAllProducts = (filter: Filters) => {
   const [filtersfromjot, setFilter] = useAtom(filterAtom);
-  console.log("use",filtersfromjot)
+  const [queryreq] = useAtom(queryAtom);
+  console.log("use", filtersfromjot);
   return useQuery({
     queryKey: ["filter"],
-    queryFn: () => getAllProducts(filtersfromjot),
+    queryFn: () => getAllProducts(filtersfromjot, queryreq),
     staleTime: 0,
   });
 };

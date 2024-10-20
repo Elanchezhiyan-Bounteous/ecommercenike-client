@@ -46,6 +46,7 @@ const ProductsListControl = () => {
     isLoading,
     isError,
   } = useGetAllProducts(filter);
+  
   const page = searchParams.get("page") ?? "1";
   const per_page = searchParams.get("per_page") ?? "16";
 
@@ -132,7 +133,7 @@ const ProductsListControl = () => {
   }, []);
 
   useEffect(() => {
-    router.push(`/shop/?page=${currentPage}&per_page=${productsPerPage}`);
+    // router.push(`/shop/?page=${currentPage}&per_page=${productsPerPage}`);
   }, [productsPerPage, currentPage]);
 
   const [isGridView, setIsGridView] = useState(true);
@@ -257,13 +258,13 @@ const ProductsListControl = () => {
 
       <ProductsListSection products={currentProducts} gridView={isGridView} />
 
-      <PaginationControls
+      {/* <PaginationControls
         hasNextPage={end < sortedProducts.length}
         hasPrevPage={start > 0}
         onPageChange={handlePageChange}
         page={currentPage}
         totalPages={Math.ceil(sortedProducts.length / productsPerPage)}
-      />
+      /> */}
     </>
   );
 };

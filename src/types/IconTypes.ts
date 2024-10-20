@@ -93,3 +93,16 @@ export interface userSessionProp {
   token: string;
   id: string;
 }
+export interface Filters {
+  gender: string[];
+  priceRange: string[];
+  saleOffers: string[];
+  brand: string[];
+}
+
+export interface QueryRequest {
+  SortBy: string;
+  IsDescending: boolean;
+  PageNumber: number;
+  PageSize:number;
+}

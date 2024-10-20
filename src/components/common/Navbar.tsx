@@ -40,6 +40,7 @@ const Navbar = () => {
     isLoading,
     isSuccess,
   } = useGetAllProductsInCart();
+  
   const [isAuthenticated, setIsAuthenticated] = useAtom(isAuthenticatedAtom);
 
   return (

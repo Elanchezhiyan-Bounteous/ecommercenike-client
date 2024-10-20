@@ -1,19 +1,19 @@
 import { atom } from "jotai";
-import { ProductForApi } from "../types/IconTypes";
-interface Filters {
-  gender: string[];
-  priceRange: string[];
-  saleOffers: string[];
-  brand: string[];
-}
-
+import { Filters, ProductForApi, QueryRequest } from "../types/IconTypes";
 
 export const showFilterAtom = atom<boolean>(false);
 export const filterAtom = atom<Filters>({
   gender: [],
   priceRange: [],
   saleOffers: [],
-  brand:[],
+  brand: [],
+});
+
+export const queryAtom = atom<QueryRequest>({
+  SortBy: "name",
+  IsDescending: false,
+  PageNumber: 1,
+  PageSize: 2,
 });
 
 export const filteredProductsAtom = atom<ProductForApi[]>();

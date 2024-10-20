@@ -11,12 +11,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useGetAllProducts } from "@/src/hooks/useProduct";
 import { filterAtom } from "@/src/lib/filterAtoms";
 import { useAtom } from "jotai";
-interface Filters {
-  gender: string[];
-  priceRange: string[];
-  saleOffers: string[];
-  brand: string[];
-}
+import { Filters } from "@/src/types/IconTypes";
 
 const ProductFilters: React.FC = () => {
   const [filters, setFilters] = useAtom(filterAtom);
@@ -40,7 +35,7 @@ const ProductFilters: React.FC = () => {
 
   useEffect(() => {
     console.log(filters, "filt");
-     refetch();
+    refetch();
   }, [filters, setFilters]);
 
   const queryClient = useQueryClient();
@@ -156,7 +151,7 @@ const ProductFilters: React.FC = () => {
                   checked={filters.saleOffers.includes("Best Seller")}
                   onCheckedChange={() => {
                     handleCheckboxChange("saleOffers", "Best Seller");
-                  //  queryClient.refetchQueries({ queryKey: ["filter"] });
+                    //  queryClient.refetchQueries({ queryKey: ["filter"] });
                   }}
                 />
                 <Label htmlFor="bestseller">Best Seller</Label>
@@ -167,7 +162,7 @@ const ProductFilters: React.FC = () => {
                   checked={filters.saleOffers.includes("Just In")}
                   onCheckedChange={() => {
                     handleCheckboxChange("saleOffers", "Just In");
-                   // queryClient.refetchQueries({ queryKey: ["filter"] });
+                    // queryClient.refetchQueries({ queryKey: ["filter"] });
                   }}
                 />
                 <Label htmlFor="justin">Just In</Label>
