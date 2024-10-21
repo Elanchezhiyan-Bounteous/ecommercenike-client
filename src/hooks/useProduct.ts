@@ -35,8 +35,9 @@ const getAllProducts = async (
       }),
     }
   );
-  console.log(response, "response");
   const productsData = response.json();
+  console.log(productsData, "response");
+
   return productsData;
 };
 

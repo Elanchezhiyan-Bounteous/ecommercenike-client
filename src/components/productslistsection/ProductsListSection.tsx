@@ -30,7 +30,7 @@ const ProductsListSection = ({
           className={`transition-all duration-300 ease-in-out grid grid-cols-1 gap-y-10 px-4 py-5 lg:gap-x-4
             md:grid-cols-2 lg:grid-cols-3 md:gap-y-2 md:gap-x-4 lg:px-8 lg:pb-10 lg:pt-4`}
         >
-          {products.map((product, index) => (
+          {products?.map((product, index) => (
             <div
               className="w-full"
               onClick={() => router.push(`/singleproduct/?id=${product.id}`)}

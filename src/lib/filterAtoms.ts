@@ -10,10 +10,10 @@ export const filterAtom = atom<Filters>({
 });
 
 export const queryAtom = atom<QueryRequest>({
-  SortBy: "name",
+  SortBy: "",
   IsDescending: false,
   PageNumber: 1,
-  PageSize: 2,
+  PageSize: 4,
 });
 
 export const filteredProductsAtom = atom<ProductForApi[]>();

@@ -36,7 +36,7 @@ export interface ShareLinks {
 
 export interface sizes {
   size: string;
-  stock: number;
+  stock: string;
 }
 export interface ProductHel {
   id?: string;

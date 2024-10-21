@@ -16,6 +16,7 @@ import { Filters } from "@/src/types/IconTypes";
 const ProductFilters: React.FC = () => {
   const [filters, setFilters] = useAtom(filterAtom);
   const { refetch } = useGetAllProducts(filters);
+  const queryClient = useQueryClient();
 
   const handleCheckboxChange = (filterType: keyof Filters, value: string) => {
     setFilters((filters) => {
@@ -37,8 +38,6 @@ const ProductFilters: React.FC = () => {
     console.log(filters, "filt");
     refetch();
   }, [filters, setFilters]);
-
-  const queryClient = useQueryClient();
 
   return (
     <div className="p-4">

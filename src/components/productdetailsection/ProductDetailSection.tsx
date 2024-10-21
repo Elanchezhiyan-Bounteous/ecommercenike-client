@@ -72,13 +72,13 @@ const ProductCard = ({ productDetails }: SingleProductComponentsProp) => {
                 selectedSize === sizeObj.size
                   ? "border-black"
                   : "border-gray-300 text-gray-500"
-              } ${sizeObj.stock === 0 ? "bg-gray-100 cursor-not-allowed" : ""}`}
-              disabled={sizeObj.stock === 0}
+              } ${parseInt(sizeObj.stock) === 0 ? "bg-gray-100 cursor-not-allowed" : ""}`}
+              disabled={parseInt(sizeObj.stock) === 0}
             >
               {sizeObj.size}
               <Typography as="p" className="block text-xs text-gray-400">
-                {sizeObj.stock > 0
-                  ? `${sizeObj.stock} available`
+                {parseInt(sizeObj.stock)> 0
+                  ? `${parseInt(sizeObj.stock)} available`
                   : "Out of stock"}
               </Typography>
             </button>
