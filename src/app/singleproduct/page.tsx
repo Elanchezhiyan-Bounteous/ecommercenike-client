@@ -1,6 +1,7 @@
 "use client";
 
 import BreadCrumbNavigation from "@/src/components/breadcrumbnavigation/BreadCrumbNavigation";
+import Footer from "@/src/components/common/Footer";
 import ImageViewer from "@/src/components/imageviewer/ImageViewer";
 import ProductDetailSection from "@/src/components/productdetailsection/ProductDetailSection";
 import ProductInformationSection from "@/src/components/productinformationsection/ProductInformationSection";
@@ -38,6 +39,7 @@ const SingleProduct = () => {
       <hr />
       <ProductInformationSection productDetails={product as ProductForApi} />
       <RelatedProductsSection productDetails={product as ProductForApi} />
+      <Footer />
     </>
   );
 };

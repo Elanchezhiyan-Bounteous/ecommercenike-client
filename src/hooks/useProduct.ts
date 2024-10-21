@@ -30,13 +30,11 @@ const getAllProducts = async (
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        filter,
-      }),
+      body: JSON.stringify(filter),
     }
   );
-  console.log(response, "response");
   const productsData = response.json();
+  console.log(productsData, "response");
   return productsData;
 };
 

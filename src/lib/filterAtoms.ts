@@ -13,7 +13,7 @@ export const queryAtom = atom<QueryRequest>({
   SortBy: "name",
   IsDescending: false,
   PageNumber: 1,
-  PageSize: 2,
+  PageSize: 4,
 });
 
 export const filteredProductsAtom = atom<ProductForApi[]>();
